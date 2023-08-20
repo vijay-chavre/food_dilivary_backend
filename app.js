@@ -6,7 +6,7 @@ import path from 'path';
 import app from './src/config/express.js';
 import routes from './src/config/routes.js';
 
-const port = 3000
+const port = 4000
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
