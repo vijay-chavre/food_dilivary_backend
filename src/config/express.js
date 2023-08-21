@@ -4,6 +4,7 @@ import logger from 'morgan';
 import cors from 'cors'
 import { connectToMongoDB } from './db.js';
 
+
 const app = express();
 app.use(cors({
   origin: '*',

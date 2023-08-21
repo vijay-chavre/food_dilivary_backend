@@ -21,7 +21,7 @@ export const getUsers = async (req, res, next) => {
         ]
       };
     }
-    const users = await User.find(query).skip(startIndex).limit(limit).lean();
+    const users = await User.find(query).skip(startIndex).limit(limit);    
     const total = await User.countDocuments(query);
     let nextPage = page + 1;
     if (nextPage * limit > total) {

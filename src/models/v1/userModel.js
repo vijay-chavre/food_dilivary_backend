@@ -11,35 +11,26 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
-  date: {
-    type: Date,
-    default: Date.now
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now
-  },
-
-  updatedAt: {
-    type: Date,
-    default: Date.now
-  }
+},{
+  timestamps: true,
+  bufferTimeoutMS: 300000,
 })
 
-userSchema.pre('findOneAndUpdate', async function(next) {
-  const docToUpdate = await this.model.findOne(this.getQuery());
-  if (docToUpdate) {
-    docToUpdate.updatedAt = new Date();
-    await docToUpdate.save();
-    this.select('-password'); 
-  }
-  next();
+userSchema.virtual('id').get(function () {
+  return this._id.toHexString();
 });
 
-userSchema.pre('find', function() {
-  this.select('-password'); 
+// Ensure virtual fields are serialised.
+userSchema.set('toJSON', {
+  virtuals: true,
+  transform: function (doc, ret) {
+    delete ret._id;
+    delete ret.__v;
+    delete ret.password
+  }
+  
 });
 
 const User = mongoose.model('User', userSchema)
