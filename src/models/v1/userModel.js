@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: [true,'This Email is already taken']
   },
   password: {
     type: String,
@@ -30,9 +30,11 @@ const userSchema = new mongoose.Schema({
 
 userSchema.pre('findOneAndUpdate', async function(next) {
   const docToUpdate = await this.model.findOne(this.getQuery());
-  docToUpdate.updatedAt = new Date();
-  await docToUpdate.save();
-  this.select('-password'); 
+  if (docToUpdate) {
+    docToUpdate.updatedAt = new Date();
+    await docToUpdate.save();
+    this.select('-password'); 
+  }
   next();
 });
 

@@ -1,8 +1,9 @@
 
 import bcrypt from 'bcrypt'
 import User from "../../models/v1/userModel.js";
-
-export const getUsers = async (req, res) => {
+import  { CustomError } from '../../utils/errorhandler.js';
+import sendSuccess from '../../utils/sucessHandler.js';
+export const getUsers = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 10;
@@ -20,33 +21,30 @@ export const getUsers = async (req, res) => {
         ]
       };
     }
-
     const users = await User.find(query).skip(startIndex).limit(limit).lean();
-
     const total = await User.countDocuments(query);
-
     let nextPage = page + 1;
     if (nextPage * limit > total) {
       nextPage = null;
     }
-
-    res.json({
-      data: users,
+    const data = {
+      users: users,
       currentPage: page,
       nextPage: nextPage,
       totalPages: Math.ceil(total / limit)
-    });
+    }
+
+    sendSuccess(res, data, 200);
   } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+    next(err)
   }
 }
-export const createUser = async (req, res) => {
+export const createUser = async (req, res, next) => {
   try {
     const existingUser = await User.findOne({ email: req.body.email });
 
     if (existingUser) {
-      return res.status(400).json({ message: 'User already exists' });
+      throw new CustomError('User already exists', 400);
     }
 
     const userPayload = {
@@ -68,12 +66,11 @@ export const createUser = async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Server error' }); 
+   next(error)
   }
 }
 
-export const updateUser = async (req, res) => {
+export const updateUser = async (req, res, next) => {
   try {
     const user = await User.findByIdAndUpdate(
       req.params.id, 
@@ -88,14 +85,13 @@ export const updateUser = async (req, res) => {
 
 
     if (!user) {
-     return res.status(404).json({ message: 'User not found' });
+     throw new CustomError('User not found', 404);
     }
 
     res.status(200).json(user);
     
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Server error');
+    next(error)
   }
 }
 

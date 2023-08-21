@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url';
 import path from 'path';
 import app from './src/config/express.js';
 import routes from './src/config/routes.js';
+import handleErrors from './src/utils/errorhandler.js';
 
 const port = 4000
 const __filename = fileURLToPath(import.meta.url);
@@ -26,13 +27,7 @@ app.use((req, res, next) => {
 
 // error handler
 app.use((err, req, res, next) => {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+   handleErrors(err,res)
 });
 
 
