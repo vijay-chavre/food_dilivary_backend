@@ -58,12 +58,7 @@ export const createUser = async (req, res, next) => {
 
     const user = new User(userPayload);
     await user.save();
-
-    res.status(201).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email
-    });
+    sendSuccess(res, user, 201);
 
   } catch (error) {
    next(error)
