@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import User from '../../models/v1/userModel.js';
 import { CustomError } from '../../utils/errorhandler.js';
 import sendSuccess from '../../utils/sucessHandler.js';
+import { s3 } from '../../services/awsService.js';
 export const getUsers = async (req, res, next) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -79,6 +80,16 @@ export const updateUser = async (req, res, next) => {
     }
 
     sendSuccess(res, user, 200);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const listS3 = async (req, res, next) => {
+  try {
+    const s3Bucket = await s3();
+    const data = await s3Bucket.listBuckets().promise();
+    sendSuccess(res, data, 200);
   } catch (error) {
     next(error);
   }
