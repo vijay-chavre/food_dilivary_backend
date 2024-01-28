@@ -1,0 +1,22 @@
+# Commonly ignored Node.js files
+node_modules
+npm-debug.log
+.npm
+
+# Build and generated files
+build
+dist
+coverage
+
+# Cache and temp files
+.cache
+.temp
+
+# Metadata files
+.DS_Store
+Thumbs.db
+
+# Specific files or patterns you want to ignore
+# (add more as needed)
+src/vendor/*
+test/fixtures/*

@@ -10,7 +10,7 @@ import passport from './src/passport/passport-config.js';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import routes from './src/config/routes.js';
-
+import { connectToMongoDB } from './src/config/db.js';
 const port = 4000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,8 +46,14 @@ app.use((err, req, res, next) => {
   handleErrors(err, res);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+connectToMongoDB()
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
 
 export default app;
