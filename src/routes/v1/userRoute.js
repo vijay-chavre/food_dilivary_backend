@@ -2,6 +2,7 @@ import express from 'express';
 import {
   createUser,
   getUsers,
+  getUserById,
   updateUser,
   listS3,
 } from '../../controllers/v1/userController.js';
@@ -16,7 +17,22 @@ router.get(
   }),
   getUsers
 );
+router.get(
+  '/users/:id',
+  passport.authenticate('jwt', {
+    session: false,
+    failureMessage: 'Invalid token',
+  }),
+  getUserById
+);
 router.post('/users', createUser);
-router.put('/users/:id', updateUser);
+router.put(
+  '/users/:id',
+  passport.authenticate('jwt', {
+    session: false,
+    failureMessage: 'Invalid token',
+  }),
+  updateUser
+);
 router.get('/lists3', listS3);
 export default router;
