@@ -1,8 +1,9 @@
 import express from 'express';
+
 import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
-import { connectToMongoDB } from './db.js';
+import { connectToMongoDB } from './db.ts';
 
 const app = express();
 app.use(

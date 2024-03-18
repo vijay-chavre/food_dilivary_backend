@@ -1,6 +1,23 @@
-const handleErrors = (err, res) => {
+import { Request, Response } from 'express';
+export interface CustomErrorType extends Error {
+  errors(errors: any): unknown;
+  statusCode?: number;
+  code: number;
+}
+
+type error = {
+  message: string;
+  errorDetails?: CustomErrorType;
+};
+
+interface ErrorResponse {
+  status: 'fail';
+  statusCode: number;
+  errors: error | error[];
+}
+const handleErrors = (err: CustomErrorType, res: Response) => {
   console.log(err);
-  const errorResponse = {
+  const errorResponse: ErrorResponse = {
     status: 'fail',
     statusCode: err.statusCode || 500,
     errors: {
@@ -47,7 +64,8 @@ const handleErrors = (err, res) => {
 };
 
 class CustomError extends Error {
-  constructor(message, statusCode) {
+  statusCode: number;
+  constructor(message: string, statusCode: number) {
     super(message);
     this.name = this.constructor.name;
     this.statusCode = statusCode;

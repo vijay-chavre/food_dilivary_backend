@@ -4,8 +4,8 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 
 // User model (you may need to import your User model or define it here)
-import User from '../models/v1/userModel.js';
-import { CustomError } from '../utils/errorhandler.js';
+import User from '../models/v1/userModel.ts';
+import { CustomError } from '../utils/errorhandler.ts';
 
 passport.use(
   new LocalStrategy(
@@ -30,7 +30,7 @@ passport.use(
   )
 );
 
-const opts = {};
+const opts: any = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = process.env.JWT_SECRET;
 console.log(opts);

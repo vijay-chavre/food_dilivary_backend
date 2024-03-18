@@ -1,7 +1,7 @@
 import express from 'express';
-import { signIn } from '../../../controllers/v1/authController.js';
-import passport from '../../../passport/passport-config.js';
-import { CustomError } from '../../../utils/errorhandler.js';
+import { signIn } from '../../../controllers/v1/authController.ts';
+import passport from '../../../passport/passport-config.ts';
+import { CustomError } from '../../../utils/errorhandler.ts';
 const router = express.Router();
 
 const checkUsernamePassword = async (req, res, done) => {
@@ -15,15 +15,6 @@ const checkUsernamePassword = async (req, res, done) => {
   }
 };
 
-/**
- * @openAI
- * /signIn:
- *   get:
- *     description: Returns the homepage
- *     responses:
- *       200:
- *         description: hello world
- */
 router.post(
   '/signIn',
   checkUsernamePassword,

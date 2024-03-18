@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  food-delivery-api:
+    build: .
+    ports:
+      - '4000:4000'
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - ./:/app
+      - /app/node_modules # anonymous volume for node_modules only
+    command: ['nodemon', '--watch', '.', '--exec', 'ts-node', './app.ts']

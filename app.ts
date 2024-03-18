@@ -1,18 +1,19 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import 'dotenv/config';
 import createError from 'http-errors';
 import { fileURLToPath } from 'url';
 import path from 'path';
-import app from './src/config/express.js';
-import handleErrors from './src/utils/errorhandler.js';
-import configureSwagger from './src/config/swagger.config.js';
-import passport from './src/passport/passport-config.js';
+import app from './src/config/express.ts';
+import handleErrors from './src/utils/errorhandler.ts';
+import passport from './src/passport/passport-config.ts';
 import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import routes from './src/config/routes.js';
-import { connectToMongoDB } from './src/config/db.js';
+
+import routes from './src/config/routes.ts';
+import { connectToMongoDB } from './src/config/db.ts';
+import { CustomErrorType } from './src/utils/errorhandler.ts';
+
 const port = 4000;
-const __filename = fileURLToPath(import.meta.url);
+const __filename = path.resolve(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // view engine setup
@@ -36,15 +37,17 @@ routes(app);
 // configureSwagger(app)
 
 // catch 404 and forward to error handler
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));
 });
 
 // error handler
-app.use((err, req, res, next) => {
-  console.log(err);
-  handleErrors(err, res);
-});
+app.use(
+  (err: CustomErrorType, req: Request, res: Response, next: NextFunction) => {
+    console.log(err);
+    handleErrors(err, res);
+  }
+);
 
 connectToMongoDB()
   .then(() => {

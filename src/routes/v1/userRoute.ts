@@ -5,7 +5,7 @@ import {
   getUserById,
   updateUser,
   listS3,
-} from '../../controllers/v1/userController.js';
+} from '../../controllers/v1/userController.ts';
 import passport from 'passport';
 const router = express.Router();
 
