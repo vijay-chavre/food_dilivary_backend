@@ -25,7 +25,7 @@ export const getUsers = asyncHandler(
     }
     const users = await User.find(query).skip(startIndex).limit(limit);
     const total = await User.countDocuments(query);
-    let nextPage = page + 1;
+    let nextPage: number | null = page + 1;
     if (nextPage * limit > total) {
       nextPage = null;
     }

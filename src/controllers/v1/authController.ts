@@ -1,21 +1,21 @@
 import { asyncHandler } from '../../utils/asyncHandler.ts';
 import sendSuccess from '../../utils/sucessHandler.ts';
 import jwt from 'jsonwebtoken';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 type User = {
   id: string;
   name: string;
   email: string;
   password: string;
 };
-interface AuthenticatedRequest extends Request {
+export interface AuthenticatedRequest extends Request {
   user: User;
 }
 
-export const signIn = asyncHandler(
-  async (req: AuthenticatedRequest, res, next) => {
-    const user = req.user;
-    //Generate and return JWT token
+export const signIn = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user as User;
+  //Generate and return JWT token
+  if (process.env.JWT_SECRET) {
     const token = jwt.sign(
       {
         id: user.id,
@@ -29,9 +29,9 @@ export const signIn = asyncHandler(
       res,
       {
         token,
-        user: req.user,
+        user: user,
       },
       200
     );
   }
-);
+});

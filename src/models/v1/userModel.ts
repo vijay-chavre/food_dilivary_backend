@@ -2,6 +2,7 @@ import mongoose, { Schema, Model, Document } from 'mongoose';
 
 export interface UserDocument extends Document {
   name: string;
+  id: string;
   email: {
     type: string;
     required: true;

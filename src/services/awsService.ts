@@ -9,15 +9,23 @@ const SSM = AWS.SSM;
 const ssm = new AWS.SSM({ region: 'us-east-1' });
 const ssmParameterName = '/food-delivery/app/aws-credentials';
 
-const getSSMParameter = async (parameterName) => {
-  const params = {
+/**
+ * Get the value of a parameter from AWS Systems Manager Parameter Store
+ *
+ * @param parameterName The name of the parameter to retrieve
+ * @returns The value of the parameter as a string
+ */
+export const getSSMParameter = async (
+  parameterName: string
+): Promise<string | undefined> => {
+  const params: AWS.SSM.GetParameterRequest = {
     Name: parameterName,
     WithDecryption: true,
   };
 
   const { Parameter } = await ssm.getParameter(params).promise();
   console.log(Parameter);
-  return Parameter.Value;
+  return Parameter?.Value;
 };
 
 const initializeAWS = async () => {
