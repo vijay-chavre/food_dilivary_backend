@@ -7,9 +7,9 @@ import {
   VerifiedCallback,
 } from 'passport-jwt';
 
-import { UserDocument } from '../models/v1/userModel.ts';
+import { UserDocument } from '../models/v1/User/userModel.ts';
 
-import User from '../models/v1/userModel.ts';
+import User from '../models/v1/User/userModel.ts';
 
 passport.use(
   new LocalStrategy(

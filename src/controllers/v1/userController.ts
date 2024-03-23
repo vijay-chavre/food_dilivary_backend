@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import User from '../../models/v1/userModel.ts';
+import User from '../../models/v1/User/userModel.ts';
 import { CustomError } from '../../utils/errorhandler.ts';
 import sendSuccess from '../../utils/sucessHandler.ts';
 import { s3 } from '../../services/awsService.ts';
