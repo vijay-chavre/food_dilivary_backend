@@ -23,7 +23,10 @@ export const getUsers = asyncHandler(
         ],
       };
     }
-    const users = await User.find(query).skip(startIndex).limit(limit);
+    const users = await User.find(query)
+      // .populate('roles', { id: 1, name: 1 })
+      .skip(startIndex)
+      .limit(limit);
     const total = await User.countDocuments(query);
     let nextPage: number | null = page + 1;
     if (nextPage * limit > total) {
@@ -51,6 +54,7 @@ export const createUser = asyncHandler(async (req, res, next) => {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
+    roles: req.body.roles,
   };
 
   // Hash password
