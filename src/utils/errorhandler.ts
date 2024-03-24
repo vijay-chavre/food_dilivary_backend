@@ -16,19 +16,17 @@ interface ErrorResponse {
   errors: error | error[];
 }
 const handleErrors = (err: CustomErrorType, res: Response) => {
-  console.log(err);
   const errorResponse: ErrorResponse = {
     status: 'fail',
-    statusCode: err.statusCode || 500,
+    statusCode: err?.statusCode || 500,
     errors: {
-      message: err.message,
+      message: err.message || 'Something went wrong',
       errorDetails: err,
     },
   };
 
   if (err instanceof CustomError) {
     errorResponse.statusCode = err.statusCode;
-    return res.status(err.statusCode).json(errorResponse);
   }
 
   if (err.name === 'ValidationError') {
@@ -37,8 +35,6 @@ const handleErrors = (err: CustomErrorType, res: Response) => {
     }));
 
     errorResponse.statusCode = 400;
-
-    return res.status(400).json(errorResponse);
   }
 
   if (err.code === 11000) {
@@ -46,19 +42,9 @@ const handleErrors = (err: CustomErrorType, res: Response) => {
       message: 'Duplicate field value entered',
     };
     errorResponse.statusCode = 400;
-
-    return res.status(400).json(errorResponse);
   }
 
-  if (err.name === 'UnauthorizedError') {
-    // JWT validation error
-    errorResponse.errors = {
-      message: 'Invalid token',
-    };
-    errorResponse.statusCode = 400;
-
-    return res.status(400).json(errorResponse);
-  }
+  console.log('API ERROR :- ', errorResponse);
 
   return res.status(errorResponse.statusCode).json(errorResponse);
 };

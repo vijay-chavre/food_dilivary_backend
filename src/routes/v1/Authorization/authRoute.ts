@@ -1,5 +1,8 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { signIn } from '../../../controllers/v1/User/authController.ts';
+import {
+  refreshToken,
+  signIn,
+} from '../../../controllers/v1/User/authController.ts';
 import passport from '../../../passport/passport-config.ts';
 import { CustomError } from '../../../utils/errorhandler.ts';
 const router = express.Router();
@@ -25,5 +28,7 @@ router.post(
   passport.authenticate('local'),
   signIn
 );
+
+router.post('/refreshToken', refreshToken);
 
 export default router;
