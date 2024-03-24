@@ -1,5 +1,5 @@
-import { asyncHandler } from '../../utils/asyncHandler.ts';
-import sendSuccess from '../../utils/sucessHandler.ts';
+import { asyncHandler } from '../../../utils/asyncHandler.ts';
+import sendSuccess from '../../../utils/sucessHandler.ts';
 import jwt from 'jsonwebtoken';
 import { Request, RequestHandler, Response } from 'express';
 type User = {

@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
-import User from '../../models/v1/User/userModel.ts';
-import { CustomError } from '../../utils/errorhandler.ts';
-import sendSuccess from '../../utils/sucessHandler.ts';
-import { s3 } from '../../services/awsService.ts';
-import { asyncHandler } from '../../utils/asyncHandler.ts';
+import User from '../../../models/v1/User/userModel.ts';
+import { CustomError } from '../../../utils/errorhandler.ts';
+import sendSuccess from '../../../utils/sucessHandler.ts';
+import { s3 } from '../../../services/awsService.ts';
+import { asyncHandler } from '../../../utils/asyncHandler.ts';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 export const getUsers: RequestHandler = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page as unknown as string) || 1;

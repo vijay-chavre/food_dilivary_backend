@@ -2,7 +2,7 @@ import express from 'express';
 import {
   getRoles,
   createRole,
-} from '../../../controllers/v1/roleController.ts';
+} from '../../../controllers/v1/User/roleController.ts';
 const router = express.Router();
 
 router.get('/roles', getRoles);

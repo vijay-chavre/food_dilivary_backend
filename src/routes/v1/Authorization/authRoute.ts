@@ -1,5 +1,5 @@
 import express, { Request, Response, NextFunction } from 'express';
-import { signIn } from '../../../controllers/v1/authController.ts';
+import { signIn } from '../../../controllers/v1/User/authController.ts';
 import passport from '../../../passport/passport-config.ts';
 import { CustomError } from '../../../utils/errorhandler.ts';
 const router = express.Router();

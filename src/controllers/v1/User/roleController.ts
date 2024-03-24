@@ -1,7 +1,7 @@
-import Role from '../../models/v1/User/roleModel.ts';
-import { CustomError } from '../../utils/errorhandler.ts';
-import sendSuccess from '../../utils/sucessHandler.ts';
-import { asyncHandler } from '../../utils/asyncHandler.ts';
+import Role from '../../../models/v1/User/roleModel.ts';
+import { CustomError } from '../../../utils/errorhandler.ts';
+import sendSuccess from '../../../utils/sucessHandler.ts';
+import { asyncHandler } from '../../../utils/asyncHandler.ts';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
 
 export const getRoles: RequestHandler = asyncHandler(async (req, res, next) => {
