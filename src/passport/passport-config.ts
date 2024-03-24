@@ -58,6 +58,7 @@ passport.use(
     done: VerifiedCallback
   ) {
     try {
+      console.log(jwt_payload);
       return done(null, jwt_payload);
     } catch (err) {
       console.log(err);
