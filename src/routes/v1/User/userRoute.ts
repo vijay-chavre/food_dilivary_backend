@@ -5,8 +5,8 @@ import {
   getUserById,
   updateUser,
   listS3,
-} from '../../controllers/v1/userController.ts';
-import requireAuth from '../../middlewares/requireAuth.ts';
+} from '../../../controllers/v1/userController.ts';
+import requireAuth from '../../../middlewares/requireAuth.ts';
 const router = express.Router();
 
 router.get('/users', requireAuth, getUsers);

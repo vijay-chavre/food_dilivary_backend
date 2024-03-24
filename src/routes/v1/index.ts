@@ -1,6 +1,6 @@
-import userRoute from './userRoute.ts';
+import userRoute from './User/userRoute.ts';
 import authRoute from './Authorization/authRoute.ts';
-import roleRoute from './roleRoutes.ts';
+import roleRoute from './User/roleRoutes.ts';
 
 const routes = [userRoute, authRoute, roleRoute];
 export default routes;
