@@ -91,6 +91,7 @@ export const updateUser: RequestHandler = asyncHandler(
     // Update user document
     user.name = req.body.name;
     user.email = req.body.email;
+    user.roles = req.body.roles || user.roles;
     if (req.body.password) {
       user.password = req.body.password;
     }

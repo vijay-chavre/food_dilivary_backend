@@ -42,13 +42,17 @@ const initializeAWS = async () => {
     },
   };
 
-  console.log(awsConfig);
-
-  return new S3(awsConfig);
+  return awsConfig;
 };
 
 const s3 = async () => {
-  return await initializeAWS();
+  const config = await initializeAWS();
+
+  return new S3(config);
 };
 
-export { s3 };
+const sns = async () => {
+  const config = await initializeAWS();
+  return new AWS.SNS(config);
+};
+export { s3, sns };
