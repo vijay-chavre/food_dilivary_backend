@@ -43,7 +43,7 @@ roleSchema.virtual('id').get(function (this: RoleDocument) {
 roleSchema.set('toJSON', {
   virtuals: true,
   transform: function (_doc: any, ret: any) {
-    delete ret._id;
+    //delete ret._id;
     delete ret.__v;
   },
 });

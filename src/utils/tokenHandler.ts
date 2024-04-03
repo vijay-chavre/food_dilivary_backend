@@ -1,5 +1,9 @@
 import jwt from 'jsonwebtoken';
 
+type User = {
+  id: string;
+};
+
 /**
  * Generate access token and refresh token
  * @param user The user to generate tokens for

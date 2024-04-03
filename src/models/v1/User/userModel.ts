@@ -1,15 +1,6 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
 import RoleModel from './roleModel.ts';
 
-const validateRoleIds = async (value: Schema.Types.ObjectId[]) => {
-  try {
-    const rolesExist = await RoleModel.find({ _id: { $in: value } });
-    return rolesExist.length === value.length;
-  } catch (error) {
-    return false; // Consider validation failed if an error occurs during database query
-  }
-};
-
 export interface UserDocument extends Document {
   name: string;
   id: string;
@@ -19,7 +10,6 @@ export interface UserDocument extends Document {
     unique: [true, 'This Email is already taken'];
   };
   password: string;
-  roles: Schema.Types.ObjectId[]; // Type for the roles field
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -37,22 +27,6 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       required: true,
     },
-    roles: {
-      type: [
-        {
-          type: Schema.Types.ObjectId,
-          ref: 'Role',
-        },
-      ],
-      validate: [
-        {
-          validator: async (value: Schema.Types.ObjectId[]) => {
-            return value && value.length > 0 && (await validateRoleIds(value));
-          },
-          message: 'One or more roles provided are invalid.',
-        },
-      ],
-    },
   },
   {
     timestamps: true,
@@ -68,7 +42,7 @@ userSchema.virtual('id').get(function (this: UserDocument) {
 userSchema.set('toJSON', {
   virtuals: true,
   transform: function (_doc: any, ret: any) {
-    delete ret._id;
+    //delete ret._id;
     delete ret.__v;
     delete ret.password;
   },

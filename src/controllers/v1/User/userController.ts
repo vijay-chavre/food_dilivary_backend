@@ -53,7 +53,6 @@ export const createUser: RequestHandler = asyncHandler(
       name: req.body.name,
       email: req.body.email,
       password: req.body.password,
-      roles: req.body.roles,
     };
 
     // Hash password
@@ -91,7 +90,6 @@ export const updateUser: RequestHandler = asyncHandler(
     // Update user document
     user.name = req.body.name;
     user.email = req.body.email;
-    user.roles = req.body.roles || user.roles;
     if (req.body.password) {
       user.password = req.body.password;
     }
