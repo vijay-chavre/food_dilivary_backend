@@ -5,6 +5,7 @@ import sendSuccess from '../../../utils/sucessHandler.ts';
 import { s3 } from '../../../services/awsService.ts';
 import { asyncHandler } from '../../../utils/asyncHandler.ts';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+
 export const getUsers: RequestHandler = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page as unknown as string) || 1;
   const limit = parseInt(req.query.limit as unknown as string) || 10;
@@ -106,6 +107,11 @@ export const getUserById: RequestHandler = asyncHandler(
       throw new CustomError('User not found', 404);
     }
     sendSuccess(res, user, 200);
+  }
+);
+export const assignRoleToUser: RequestHandler = asyncHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
+    console.log(req.user);
   }
 );
 
