@@ -7,7 +7,7 @@ import {
 } from '../../../controllers/v1/User/authController.ts';
 import passport from '../../../passport/passport-config.ts';
 import { CustomError } from '../../../utils/errorhandler.ts';
-import User from '../../../models/v1/User/userModel.ts';
+import User, { UserDocument } from '../../../models/v1/User/userModel.ts';
 const router = express.Router();
 
 const checkUsernamePassword = async (
@@ -19,7 +19,9 @@ const checkUsernamePassword = async (
     if (!req.body.email || !req.body.password) {
       throw new CustomError('Email and password are required', 400);
     }
-    const user: any = await User.findOne({ email: req.body.email });
+    const user: UserDocument | null = await User.findOne({
+      email: req.body.email,
+    });
 
     if (!user) {
       throw new CustomError('Invalid email or password', 400);
@@ -29,6 +31,7 @@ const checkUsernamePassword = async (
     }
 
     req.user = user;
+
     done();
   } catch (error) {
     done(error);

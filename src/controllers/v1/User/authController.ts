@@ -6,6 +6,7 @@ import {
   generateTokens,
   getUserFromToken,
 } from '../../../utils/tokenHandler.ts';
+import { UserDocument } from '../../../models/v1/User/userModel.ts';
 type User = {
   id: string;
   name: string;
@@ -17,9 +18,9 @@ export interface AuthenticatedRequest extends Request {
 }
 
 export const signIn: RequestHandler = asyncHandler(async (req, res) => {
-  const user = req.user as User;
+  const user = req.user as UserDocument;
   //Generate and return JWT token
-  if (process.env.JWT_SECRET) {
+  if (process.env.JWT_SECRET && user) {
     const { accessToken, refreshToken } = generateTokens(user);
 
     sendSuccess(
@@ -42,7 +43,11 @@ export const refreshToken: RequestHandler = asyncHandler(async (req, res) => {
   if (!process.env.JWT_SECRET) {
     throw new CustomError('JWT_SECRET not defined', 500);
   }
+
   const user = await getUserFromToken(refreshToken);
+  if (!user) {
+    throw new CustomError('Invalid refresh token', 400);
+  }
   const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
 
   sendSuccess(

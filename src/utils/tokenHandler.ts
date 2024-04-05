@@ -1,15 +1,13 @@
 import jwt from 'jsonwebtoken';
-
-type User = {
-  id: string;
-};
+import { UserDocument } from '../models/v1/User/userModel.ts';
+import User from '../models/v1/User/userModel.ts';
 
 /**
  * Generate access token and refresh token
  * @param user The user to generate tokens for
  * @returns An object with the access token and refresh token
  */
-export function generateTokens(user: { id: string }): {
+export function generateTokens(user: UserDocument): {
   accessToken: string;
   refreshToken: string;
 } {
@@ -17,23 +15,36 @@ export function generateTokens(user: { id: string }): {
     throw new Error('JWT_SECRET not defined');
   }
 
-  const accessToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {
+  const payload = {
+    id: user._id,
+    email: user.email,
+    name: user.name,
+    _id: user._id,
+  };
+
+  const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: '15m',
   } as jwt.SignOptions);
 
-  const refreshToken = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+  const refreshToken = jwt.sign(payload, process.env.JWT_SECRET);
 
   return { accessToken, refreshToken };
 }
 
-export const getUserFromToken = async (token: string): Promise<User> => {
+export const getUserFromToken = async (
+  token: string
+): Promise<UserDocument | null> => {
   if (!process.env.JWT_SECRET) {
     throw new Error('JWT_SECRET not defined');
   }
 
   let user;
   try {
-    user = jwt.verify(token, process.env.JWT_SECRET) as User;
+    user = jwt.verify(token, process.env.JWT_SECRET) as UserDocument;
+    if (!user) {
+      throw new Error('Invalid token');
+    }
+    user = User.findOne({ _id: user._id });
   } catch (error) {
     throw error;
   }
