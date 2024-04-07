@@ -12,8 +12,35 @@ export default function sendSuccess(
   data: unknown,
   statusCode: number = 200
 ): Express.Response {
-  return res.status(statusCode).json({
-    statusCode,
-    data,
-  });
+  const apiResponse = new ApiResponse(statusCode, data, 'Success');
+  if (
+    typeof data === 'object' &&
+    data !== null &&
+    'accessToken' in data &&
+    'refreshToken' in data
+  ) {
+    const { accessToken, refreshToken } = data;
+
+    return res
+      .status(statusCode)
+      .cookie('accessToken', accessToken)
+      .cookie('refreshToken', refreshToken)
+      .json(apiResponse);
+  }
+  return res.status(statusCode).json(apiResponse);
 }
+
+class ApiResponse {
+  statusCode: number;
+  data: unknown;
+  message: string;
+  success: boolean;
+  constructor(statusCode: number, data: unknown, message = 'Success') {
+    this.statusCode = statusCode;
+    this.data = data;
+    this.message = message;
+    this.success = statusCode < 400;
+  }
+}
+
+export { ApiResponse };
