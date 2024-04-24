@@ -23,7 +23,7 @@ export function generateTokens(user: UserDocument): {
   };
 
   const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
-    expiresIn: '15m',
+    expiresIn: '2h',
   } as jwt.SignOptions);
 
   const refreshToken = jwt.sign(payload, process.env.JWT_SECRET);

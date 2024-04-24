@@ -25,8 +25,8 @@ interface Query {
  * @returns {Error} 404 - User not found
  */
 export const getChats: RequestHandler = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page as unknown as string, 10);
-  const limit = parseInt(req.query.limit as unknown as string, 10);
+  const page = parseInt(req.query.page as unknown as string, 10) || 1;
+  const limit = parseInt(req.query.limit as unknown as string, 10) || 10;
   const search = (req.query.search as unknown as string) || '';
 
   const startIndex = (page - 1) * limit;
