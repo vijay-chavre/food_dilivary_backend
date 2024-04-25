@@ -10,6 +10,7 @@ export interface UserDocument extends Document {
     unique: [true, 'This Email is already taken'];
   };
   password: string;
+  roles: string[];
 }
 
 const userSchema = new Schema<UserDocument>(
@@ -27,6 +28,7 @@ const userSchema = new Schema<UserDocument>(
       type: String,
       required: true,
     },
+    roles: [{ type: Schema.Types.ObjectId, ref: 'Role' }],
   },
   {
     timestamps: true,

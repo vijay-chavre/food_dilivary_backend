@@ -107,6 +107,16 @@ export const assignRoleToUser: RequestHandler = asyncHandler(
   }
 );
 
+// delete All users
+
+// delete All users
+export const deleteAllUsers: RequestHandler = asyncHandler(
+  async (req, res, next) => {
+    const deletedUsers = await User.deleteMany({});
+    sendSuccess(res, deletedUsers, 200);
+  }
+);
+
 export const listS3: RequestHandler = asyncHandler(async (req, res, next) => {
   const s3Bucket = await s3();
   const data = await s3Bucket.listBuckets().promise();

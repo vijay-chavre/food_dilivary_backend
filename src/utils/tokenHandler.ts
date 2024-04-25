@@ -20,6 +20,7 @@ export function generateTokens(user: UserDocument): {
     email: user.email,
     name: user.name,
     _id: user._id,
+    roles: user.roles,
   };
 
   const accessToken = jwt.sign(payload, process.env.JWT_SECRET, {
