@@ -8,12 +8,13 @@ import {
   deleteAllUsers,
 } from '../../../controllers/v1/User/userController.ts';
 import requireAuth from '../../../middlewares/requireAuth.ts';
+import isAdmin from '../../../middlewares/isAdmin.ts';
 const router = express.Router();
 
 router.get('/users', requireAuth, getUsers);
 router.get('/users/:id', requireAuth, getUserById);
 router.post('/users', createUser);
 router.put('/users/:id', requireAuth, updateUser);
-router.delete('/users', requireAuth, deleteAllUsers);
+router.delete('/users', requireAuth, isAdmin, deleteAllUsers);
 router.get('/lists3', listS3);
 export default router;
