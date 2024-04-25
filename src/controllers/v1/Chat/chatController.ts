@@ -86,7 +86,21 @@ export const createChat: RequestHandler = asyncHandler(
     }
     // check if type is private and then check number of participants
     if (data?.type !== 'group' && data.participants.length > 1) {
+      // find chat by participant id
+
       throw new CustomError('Private chat can only have 1 participants', 422);
+    }
+
+    // check if chat already exists
+
+    if (data.type === 'private') {
+      const chatFound = await Chat.findOne({
+        participants: { $in: data.participants[0] },
+        type: 'private',
+      });
+      if (chatFound) {
+        return sendSuccess(res, chatFound, 200);
+      }
     }
 
     // create payload
@@ -101,5 +115,17 @@ export const createChat: RequestHandler = asyncHandler(
     await chat.save();
 
     sendSuccess(res, chat, 200);
+  }
+);
+
+// delete All chats
+export const deleteAllChats: RequestHandler = asyncHandler(
+  async (req, res, next) => {
+    const user = req.user as UserDocument;
+    if (!user?._id) {
+      throw new Error('User not found');
+    }
+    const chats = await Chat.deleteMany({ creator: user._id });
+    sendSuccess(res, chats, 200);
   }
 );
