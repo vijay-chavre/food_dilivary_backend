@@ -5,6 +5,7 @@ import sendSuccess from '../../../utils/sucessHandler.ts';
 import { s3 } from '../../../services/awsService.ts';
 import { asyncHandler } from '../../../utils/asyncHandler.ts';
 import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { attachPagination } from '../../../utils/paginatedResponse.ts';
 
 export const getUsers: RequestHandler = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page as unknown as string) || 1;
@@ -28,18 +29,9 @@ export const getUsers: RequestHandler = asyncHandler(async (req, res, next) => {
     .skip(startIndex)
     .limit(limit);
   const total = await User.countDocuments(query);
-  let nextPage: number | null = page + 1;
-  if (nextPage * limit > total) {
-    nextPage = null;
-  }
-  const data = {
-    users: users,
-    currentPage: page,
-    nextPage: nextPage,
-    totalPages: Math.ceil(total / limit),
-  };
 
-  sendSuccess(res, data, 200);
+  const paginatedResponse = attachPagination(users, page, limit, total);
+  sendSuccess(res, paginatedResponse, 200);
 });
 
 export const createUser: RequestHandler = asyncHandler(
