@@ -111,6 +111,17 @@ export const createChat: RequestHandler = asyncHandler(
       }
     }
 
+    // check if chat group already exist
+    if (data.type === 'group') {
+      const chatFound = await Chat.findOne({
+        participants: { $all: data.participants },
+        type: 'group',
+      });
+      if (chatFound) {
+        return sendSuccess(res, chatFound, 200);
+      }
+    }
+
     // create payload
     const payload = {
       name: data.name,
