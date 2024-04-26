@@ -9,8 +9,9 @@ interface Query {
   $or?: {
     name?: { $regex: RegExp; $options?: string };
     type?: { $regex: RegExp; $options?: string };
+    creator?: string;
+    participants?: { $in: string[] };
   }[];
-  creator: string;
 }
 
 /**
@@ -35,15 +36,24 @@ export const getChats: RequestHandler = asyncHandler(async (req, res, next) => {
     throw new Error('User not found');
   }
   let query: Query = {
-    creator: user._id,
+    $or: [
+      {
+        participants: { $in: [user._id] },
+      },
+      {
+        creator: user._id,
+      },
+    ],
   };
   if (search) {
     // line 10
     query.$or = [
+      ...(query.$or || []),
       { name: { $regex: new RegExp(search, 'i') } },
       { type: { $regex: new RegExp(search, 'i') } },
     ];
   }
+
   const chats = await Chat.find(query).skip(startIndex).limit(limit);
   const total = await Chat.countDocuments(query);
   const paginatedResponse = attachPagination(chats, page, limit, total);
@@ -87,15 +97,13 @@ export const createChat: RequestHandler = asyncHandler(
     // check if type is private and then check number of participants
     if (data?.type !== 'group' && data.participants.length > 1) {
       // find chat by participant id
-
       throw new CustomError('Private chat can only have 1 participants', 422);
     }
 
     // check if chat already exists
-
     if (data.type === 'private') {
       const chatFound = await Chat.findOne({
-        participants: { $in: data.participants[0] },
+        participants: { $in: data.participants },
         type: 'private',
       });
       if (chatFound) {
@@ -125,7 +133,7 @@ export const deleteAllChats: RequestHandler = asyncHandler(
     if (!user?._id) {
       throw new Error('User not found');
     }
-    const chats = await Chat.deleteMany({ creator: user._id });
+    const chats = await Chat.deleteMany({});
     sendSuccess(res, chats, 200);
   }
 );
