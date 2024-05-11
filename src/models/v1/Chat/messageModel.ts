@@ -5,6 +5,10 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 interface MessageDocument extends Document {
   senderId: string;
   content: string;
+  chat: {
+    type: Schema.Types.ObjectId;
+    ref: 'Chat';
+  };
 }
 
 const MessageSchema = new Schema<MessageDocument>(
@@ -15,6 +19,11 @@ const MessageSchema = new Schema<MessageDocument>(
     },
     content: {
       type: String,
+      required: true,
+    },
+    chat: {
+      type: Schema.Types.ObjectId,
+      ref: 'Chat',
       required: true,
     },
   },

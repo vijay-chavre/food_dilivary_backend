@@ -137,6 +137,25 @@ export const createChat: RequestHandler = asyncHandler(
   }
 );
 
+export const getChatDetails: RequestHandler = asyncHandler(
+  async (req, res, next) => {
+    const { id } = req.params;
+    const chat = await Chat.findById(id).populate('participants', {
+      name: 1,
+      avatar: 1,
+      _id: 1,
+      createdAt: 1,
+      updatedAt: 1,
+    });
+
+    if (!chat) {
+      throw new CustomError('Chat not found', 404);
+    }
+
+    sendSuccess(res, chat, 200);
+  }
+);
+
 // delete All chats
 export const deleteAllChats: RequestHandler = asyncHandler(
   async (req, res, next) => {
