@@ -3,7 +3,10 @@ import { send } from 'process';
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 interface MessageDocument extends Document {
-  senderId: string;
+  sender: {
+    type: Schema.Types.ObjectId;
+    ref: 'User';
+  };
   content: string;
   chat: {
     type: Schema.Types.ObjectId;
@@ -13,8 +16,9 @@ interface MessageDocument extends Document {
 
 const MessageSchema = new Schema<MessageDocument>(
   {
-    senderId: {
-      type: String,
+    sender: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     content: {

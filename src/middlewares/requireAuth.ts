@@ -11,7 +11,7 @@ const requireAuth: RequestHandler = (req, res, next) => {
       failureMessage: 'Invalid token',
     },
     (error: Error | null, user?: UserDocument | false, info?: any) => {
-      console.log({ error, user, info });
+      //console.log({ error, user, info });
       if (error || !user) {
         throw new CustomError(info, 401);
       }

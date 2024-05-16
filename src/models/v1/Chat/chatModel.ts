@@ -8,6 +8,10 @@ interface ChatDocument extends Document {
     type: Schema.Types.ObjectId;
     ref: 'User';
   };
+  lastMessage: {
+    type: Schema.Types.ObjectId;
+    ref: 'Message';
+  };
   type: {
     type: string;
     enum: ['group', 'private'];
@@ -37,6 +41,10 @@ const ChatSchema = new Schema<ChatDocument>(
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
+    },
+    lastMessage: {
+      type: Schema.Types.ObjectId,
+      ref: 'Message',
     },
     type: {
       type: String,

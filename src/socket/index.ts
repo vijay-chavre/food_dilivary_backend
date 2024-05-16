@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io';
 import { AvailableChatEvents, ChatEventEnum } from '../constants.ts';
 import { CustomError } from '../utils/errorhandler.ts';
 import User from '../models/v1/User/userModel.ts';
+import { RequestHandler } from 'express';
 
 /**
  * @description This function is responsible to allow user to join the chat represented by chatId (chatId). event happens when user switches between the chats
@@ -54,7 +55,7 @@ const initializeSocketIO = (io: Server) => {
 
       if (!token) {
         // If there is no access token in cookies. Check inside the handshake auth
-        token = socket.handshake.query.token as string;
+        token = socket.handshake.auth.token as string;
       }
 
       if (!token) {
@@ -114,16 +115,13 @@ const initializeSocketIO = (io: Server) => {
  * @param {any} payload - Data that should be sent when emitting the event
  * @description Utility function responsible to abstract the logic of socket emission via the io instance
  */
-// const emitSocketEvent = (
-//   req: Request,
-//   roomId: string,
-//   event: string,
-//   payload: any
-// ) => {
-//   req.app.get('io').in(roomId).emit(event, payload);
-// };
-
-export {
-  initializeSocketIO,
-  //emitSocketEvent
+const emitSocketEvent = (
+  io: Socket,
+  roomId: string,
+  event: string,
+  payload: any
+) => {
+  io.in(roomId).emit(event, payload);
 };
+
+export { initializeSocketIO, emitSocketEvent };

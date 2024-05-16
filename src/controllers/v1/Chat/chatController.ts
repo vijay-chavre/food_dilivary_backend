@@ -126,7 +126,7 @@ export const createChat: RequestHandler = asyncHandler(
     const payload = {
       name: data.name,
       type: data.type,
-      participants: data.participants,
+      participants: [user._id, ...data.participants],
       creator: user._id,
     };
 
