@@ -9,6 +9,31 @@ import { UserDocument } from '../../../models/v1/User/userModel.ts';
 import { emitSocketEvent } from '../../../socket/index.ts';
 import { ChatEventEnum } from '../../../constants.ts';
 
+const commonMessageAggregation = [
+  {
+    $lookup: {
+      from: 'users',
+      localField: 'sender',
+      foreignField: '_id',
+      as: 'sender',
+    },
+  },
+  {
+    $unwind: '$sender',
+  },
+  {
+    $project: {
+      _id: 1,
+      'sender._id': 1,
+      'sender.name': 1,
+      'sender.email': 1,
+      chat: 1,
+      content: 1,
+      createdAt: 1,
+    },
+  },
+];
+
 export const getMessages: RequestHandler = asyncHandler(
   async (req, res, next) => {
     const { chatId } = req.params;
@@ -26,28 +51,7 @@ export const getMessages: RequestHandler = asyncHandler(
       {
         $match: { chat: new mongoose.Types.ObjectId(chatId) },
       },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'sender',
-          foreignField: '_id',
-          as: 'sender',
-        },
-      },
-      {
-        $unwind: '$sender',
-      },
-      {
-        $project: {
-          _id: 1,
-          'sender._id': 1,
-          'sender.name': 1,
-          'sender.email': 1,
-          chat: 1,
-          content: 1,
-          createdAt: 1,
-        },
-      },
+      ...commonMessageAggregation,
     ]);
     sendSuccess(res, messages, 200);
   }
@@ -93,28 +97,7 @@ export const sendMessage: RequestHandler = asyncHandler(
           _id: new mongoose.Types.ObjectId(message._id),
         },
       },
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'sender',
-          foreignField: '_id',
-          as: 'sender',
-        },
-      },
-      {
-        $unwind: '$sender',
-      },
-      {
-        $project: {
-          _id: 1,
-          'sender._id': 1,
-          'sender.name': 1,
-          'sender.email': 1,
-          chat: 1,
-          content: 1,
-          createdAt: 1,
-        },
-      },
+      ...commonMessageAggregation,
     ]);
 
     // Store the aggregation result
