@@ -12,11 +12,13 @@
 
     "target": "es5", // Set the target ECMAScript version (adjust if needed)
     "module": "commonjs", // Use the CommonJS module system
+    "rootDir": "./",
+    "baseUrl": "./",
     "outDir": "dist", // Output compiled JavaScript to the "dist" folder
     "strict": true, // Enable strict type checking
     "allowJs": true // Allow compiling existing JavaScript files
   },
-  "ts-node": { "esm": true },
+  // "ts-node": { "esm": true },
   "include": ["src/**/*", "**/*.ts"],
   "exclude": ["node_modules"]
 }

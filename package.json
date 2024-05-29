@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "rm -rf dist && npx tsc",
-    "start": "node dist/app.js --profile vijay-personal",
-    "dev": "npx nodemon ./app.ts --profile vijay-personal"
+    "start": "ts-node app.ts --profile vijay-personal",
+    "dev": "nodemon"
   },
   "dependencies": {
     "@types/socket.io": "^3.0.2",
