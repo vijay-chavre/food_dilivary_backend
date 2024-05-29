@@ -1,6 +1,6 @@
 import { Strategy as LocalStrategy } from 'passport-local';
-import { UserDocument } from '../models/v1/User/userModel.ts';
-import User from '../models/v1/User/userModel.ts';
+import { UserDocument } from '../models/v1/User/userModel';
+import User from '../models/v1/User/userModel';
 import bcrypt from 'bcrypt';
 import { PassportStatic } from 'passport';
 

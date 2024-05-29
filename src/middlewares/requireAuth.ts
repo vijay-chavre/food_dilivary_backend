@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
 import passport from 'passport';
-import { UserDocument } from '../models/v1/User/userModel.ts';
-import { CustomError } from '../utils/errorhandler.ts';
+import { UserDocument } from '../models/v1/User/userModel';
+import { CustomError } from '../utils/errorhandler';
 
 const requireAuth: RequestHandler = (req, res, next) => {
   passport.authenticate(

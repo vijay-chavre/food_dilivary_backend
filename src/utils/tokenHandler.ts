@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import { UserDocument } from '../models/v1/User/userModel.ts';
-import User from '../models/v1/User/userModel.ts';
+import { UserDocument } from '../models/v1/User/userModel';
+import User from '../models/v1/User/userModel';
 
 /**
  * Generate access token and refresh token

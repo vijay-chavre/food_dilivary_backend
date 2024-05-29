@@ -4,10 +4,10 @@ import bcrypt from 'bcrypt';
 import {
   refreshToken,
   signIn,
-} from '../../../controllers/v1/User/authController.ts';
-import passport from '../../../passport/passport-config.ts';
-import { CustomError } from '../../../utils/errorhandler.ts';
-import User, { UserDocument } from '../../../models/v1/User/userModel.ts';
+} from '../../../controllers/v1/User/authController';
+import passport from '../../../passport/passport-config';
+import { CustomError } from '../../../utils/errorhandler';
+import User, { UserDocument } from '../../../models/v1/User/userModel';
 const router = express.Router();
 
 const checkUsernamePassword = async (

@@ -5,11 +5,11 @@ import cookieParser from 'cookie-parser';
 import logger from 'morgan';
 import cors from 'cors';
 import path from 'path';
-import passport from '../passport/passport-config.ts';
+import passport from '../passport/passport-config';
 import session from 'express-session';
-import routes from './routes.ts';
+import routes from './routes';
 
-import { initializeSocketIO } from '../socket/index.ts';
+import { initializeSocketIO } from '../socket/index';
 const app = express();
 
 export const httpServer = createServer(app);
@@ -35,7 +35,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-const __filename = path.resolve(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.set('views', path.join(__dirname, 'src', 'views'));

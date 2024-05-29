@@ -1,16 +1,16 @@
 import express from 'express';
-import requireAuth from '../../../middlewares/requireAuth.ts';
+import requireAuth from '../../../middlewares/requireAuth';
 import {
   createChat,
   deleteAllChats,
   getChats,
   getChatDetails,
-} from '../../../controllers/v1/Chat/chatController.ts';
-import isAdmin from '../../../middlewares/isAdmin.ts';
+} from '../../../controllers/v1/Chat/chatController';
+import isAdmin from '../../../middlewares/isAdmin';
 import {
   sendMessage,
   getMessages,
-} from '../../../controllers/v1/Chat/messageController.ts';
+} from '../../../controllers/v1/Chat/messageController';
 
 const router = express.Router();
 router.get('/chats', requireAuth, getChats);

@@ -1,7 +1,7 @@
 import { RequestHandler } from 'express';
-import { UserDocument } from '../models/v1/User/userModel.ts';
-import { CustomError } from '../utils/errorhandler.ts';
-import Role from '../models/v1/User/roleModel.ts';
+import { UserDocument } from '../models/v1/User/userModel';
+import { CustomError } from '../utils/errorhandler';
+import Role from '../models/v1/User/roleModel';
 
 const isAdmin: RequestHandler = async (req, res, next) => {
   const user = req.user as UserDocument;

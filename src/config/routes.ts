@@ -1,6 +1,6 @@
-import v1Routes from '../routes/v1/index.ts';
+import v1Routes from '../routes/v1/index';
 import listEndpoints from 'express-list-endpoints';
-import { displayDataInTable } from '../utils/logRoutesUtils.ts';
+import { displayDataInTable } from '../utils/logRoutesUtils';
 import { Express } from 'express';
 
 const routes = (app: Express) => {

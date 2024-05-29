@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model, Document } from 'mongoose';
-import RoleModel from './roleModel.ts';
+import RoleModel from './roleModel';
 
 export interface UserDocument extends Document {
   name: string;

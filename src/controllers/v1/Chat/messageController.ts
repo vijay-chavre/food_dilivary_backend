@@ -1,13 +1,13 @@
 import { RequestHandler } from 'express';
-import { asyncHandler } from '../../../utils/asyncHandler.ts';
-import sendSuccess, { ApiResponse } from '../../../utils/sucessHandler.ts';
-import { CustomError } from '../../../utils/errorhandler.ts';
-import Chat from '../../../models/v1/Chat/chatModel.ts';
-import Message from '../../../models/v1/Chat/messageModel.ts';
+import { asyncHandler } from '../../../utils/asyncHandler';
+import sendSuccess, { ApiResponse } from '../../../utils/sucessHandler';
+import { CustomError } from '../../../utils/errorhandler';
+import Chat from '../../../models/v1/Chat/chatModel';
+import Message from '../../../models/v1/Chat/messageModel';
 import mongoose from 'mongoose';
-import { UserDocument } from '../../../models/v1/User/userModel.ts';
-import { emitSocketEvent } from '../../../socket/index.ts';
-import { ChatEventEnum } from '../../../constants.ts';
+import { UserDocument } from '../../../models/v1/User/userModel';
+import { emitSocketEvent } from '../../../socket/index';
+import { ChatEventEnum } from '../../../constants';
 
 const commonMessageAggregation = [
   {

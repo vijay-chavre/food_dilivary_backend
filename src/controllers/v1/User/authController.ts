@@ -1,12 +1,9 @@
-import { asyncHandler } from '../../../utils/asyncHandler.ts';
-import sendSuccess from '../../../utils/sucessHandler.ts';
+import { asyncHandler } from '../../../utils/asyncHandler';
+import sendSuccess from '../../../utils/sucessHandler';
 import { Request, RequestHandler, Response } from 'express';
-import { CustomError } from '../../../utils/errorhandler.ts';
-import {
-  generateTokens,
-  getUserFromToken,
-} from '../../../utils/tokenHandler.ts';
-import { UserDocument } from '../../../models/v1/User/userModel.ts';
+import { CustomError } from '../../../utils/errorhandler';
+import { generateTokens, getUserFromToken } from '../../../utils/tokenHandler';
+import { UserDocument } from '../../../models/v1/User/userModel';
 type User = {
   id: string;
   name: string;

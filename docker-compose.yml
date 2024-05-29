@@ -10,4 +10,4 @@ services:
     volumes:
       - ./:/app
       - /app/node_modules # anonymous volume for node_modules only
-    command: ['nodemon', '--watch', '.', '--exec', 'ts-node', './app.ts']
+    command: ['nodemon', '--watch', '.', '--exec', 'ts-node', './app']

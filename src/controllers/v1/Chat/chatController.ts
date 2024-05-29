@@ -1,10 +1,10 @@
 import { RequestHandler } from 'express';
-import { asyncHandler } from '../../../utils/asyncHandler.ts';
-import sendSuccess from '../../../utils/sucessHandler.ts';
-import Chat from '../../../models/v1/Chat/chatModel.ts';
-import { UserDocument } from '../../../models/v1/User/userModel.ts';
-import { CustomError } from '../../../utils/errorhandler.ts';
-import { attachPagination } from '../../../utils/paginatedResponse.ts';
+import { asyncHandler } from '../../../utils/asyncHandler';
+import sendSuccess from '../../../utils/sucessHandler';
+import Chat from '../../../models/v1/Chat/chatModel';
+import { UserDocument } from '../../../models/v1/User/userModel';
+import { CustomError } from '../../../utils/errorhandler';
+import { attachPagination } from '../../../utils/paginatedResponse';
 interface Query {
   $or?: {
     name?: { $regex: RegExp; $options?: string };

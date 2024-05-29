@@ -3,8 +3,8 @@ import {
   getRoles,
   createRole,
   assignRole,
-} from '../../../controllers/v1/User/roleController.ts';
-import requireAuth from '../../../middlewares/requireAuth.ts';
+} from '../../../controllers/v1/User/roleController';
+import requireAuth from '../../../middlewares/requireAuth';
 const router = express.Router();
 
 router.get('/roles', getRoles);

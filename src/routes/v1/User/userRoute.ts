@@ -6,9 +6,9 @@ import {
   updateUser,
   listS3,
   deleteAllUsers,
-} from '../../../controllers/v1/User/userController.ts';
-import requireAuth from '../../../middlewares/requireAuth.ts';
-import isAdmin from '../../../middlewares/isAdmin.ts';
+} from '../../../controllers/v1/User/userController';
+import requireAuth from '../../../middlewares/requireAuth';
+import isAdmin from '../../../middlewares/isAdmin';
 const router = express.Router();
 
 router.get('/users', requireAuth, getUsers);

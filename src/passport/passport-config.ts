@@ -1,10 +1,10 @@
 import passport, { PassportStatic } from 'passport';
-import localStrategy from './local-startegy.ts';
-import jwtStrategy from './jwt-strategy.ts';
+import localStrategy from './local-startegy';
+import jwtStrategy from './jwt-strategy';
 
-import { UserDocument } from '../models/v1/User/userModel.ts';
+import { UserDocument } from '../models/v1/User/userModel';
 
-import User from '../models/v1/User/userModel.ts';
+import User from '../models/v1/User/userModel';
 
 localStrategy(passport);
 jwtStrategy(passport);

@@ -1,10 +1,10 @@
-import { UserDocument } from './../models/v1/User/userModel.ts';
+import { UserDocument } from './../models/v1/User/userModel';
 import cookie from 'cookie';
 import jwt from 'jsonwebtoken';
 import { Server, Socket } from 'socket.io';
-import { AvailableChatEvents, ChatEventEnum } from '../constants.ts';
-import { CustomError } from '../utils/errorhandler.ts';
-import User from '../models/v1/User/userModel.ts';
+import { AvailableChatEvents, ChatEventEnum } from '../constants';
+import { CustomError } from '../utils/errorhandler';
+import User from '../models/v1/User/userModel';
 import { RequestHandler } from 'express';
 
 /**
