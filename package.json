@@ -3,7 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "rm -rf dist && tsc",
     "start": "ts-node app.ts --profile vijay-personal",
     "dev": "nodemon"
   },
@@ -23,13 +22,14 @@
     "http-errors": "~1.6.3",
     "https": "^1.0.0",
     "install": "^0.13.0",
-    "jade": "^1.9.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.4.3",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
+    "pug": "^3.0.3",
+    "serverless-http": "^3.2.0",
     "socket.io": "^4.7.5",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
