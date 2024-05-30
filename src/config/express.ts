@@ -17,7 +17,7 @@ export const httpServer = createServer(app);
 const io = new Server(httpServer, {
   pingTimeout: 60000,
   cors: {
-    origin: '*',
+    origin: 'http://localhost:4001',
     credentials: true,
   },
 });
