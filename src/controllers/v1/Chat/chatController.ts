@@ -54,7 +54,10 @@ export const getChats: RequestHandler = asyncHandler(async (req, res, next) => {
     ];
   }
 
-  const chats = await Chat.find(query).skip(startIndex).limit(limit);
+  const chats = await Chat.find(query)
+    .populate('participants', 'name _id')
+    .skip(startIndex)
+    .limit(limit);
   const total = await Chat.countDocuments(query);
   const paginatedResponse = attachPagination(chats, page, limit, total);
   sendSuccess(res, paginatedResponse, 200);
