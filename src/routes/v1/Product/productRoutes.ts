@@ -1,0 +1,29 @@
+import express from 'express';
+import requireAuth from '../../../middlewares/requireAuth';
+import {
+  createBrand,
+  createCategory,
+  createProduct,
+  getBrands,
+  getCategories,
+  getProducts,
+} from '../../../controllers/v1/Product/productController';
+import { createStock } from '../../../controllers/v1/Product/stockController';
+const router = express.Router();
+
+// Product Routes
+router.post('/products', requireAuth, createProduct);
+router.get('/products', requireAuth, getProducts);
+
+//Stock Routes
+router.post('/stocks', requireAuth, createStock);
+
+// Category Routes
+router.post('/categories', requireAuth, createCategory);
+router.get('/categories', requireAuth, getCategories);
+
+// Brand Routes
+router.post('/brands', requireAuth, createBrand);
+router.get('/brands', requireAuth, getBrands);
+
+export default router;
