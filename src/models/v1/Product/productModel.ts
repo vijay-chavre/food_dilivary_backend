@@ -54,7 +54,7 @@ const productSchema = new Schema<ProductDocument>(
     },
     image: {
       type: String,
-      required: true,
+      required: false,
     },
     category: {
       type: Schema.Types.ObjectId,
