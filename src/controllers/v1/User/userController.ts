@@ -13,7 +13,6 @@ export const getUsers: RequestHandler = asyncHandler(async (req, res, next) => {
   const search = (req.query.search as unknown as string) || '';
 
   const startIndex = (page - 1) * limit;
-  const endIndex = page * limit;
 
   let query = {};
   if (search) {

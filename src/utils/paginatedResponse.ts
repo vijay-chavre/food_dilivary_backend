@@ -2,6 +2,7 @@ interface PaginationResult<T> {
   currentPage: number;
   nextPage: number | null;
   totalPages: number;
+  totalCount: number;
   data: T[];
 }
 
@@ -17,6 +18,7 @@ export function attachPagination<T>(
     currentPage: page,
     nextPage,
     totalPages,
+    totalCount: total,
     data,
   };
 }
