@@ -84,12 +84,25 @@ export const getProducts = asyncHandler(async (req, res, next) => {
   const products = await Product.find(query)
     .populate('category', 'name')
     .populate('brand', 'name')
+    .sort({
+      updatedAt: -1,
+    })
     .skip(startIndex)
     .limit(limit);
   const total = await Product.countDocuments(query);
 
   const paginatedResponse = attachPagination(products, page, limit, total);
   sendSuccess(res, paginatedResponse, 200);
+});
+
+export const getProductById = asyncHandler(async (req, res, next) => {
+  const product = await Product.findById(req.params.id)
+    .populate('category', 'name')
+    .populate('brand', 'name');
+  if (!product) {
+    throw new CustomError('Product not found', 404);
+  }
+  sendSuccess(res, product, 200);
 });
 
 // Category controller

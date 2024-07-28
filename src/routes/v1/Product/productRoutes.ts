@@ -6,6 +6,7 @@ import {
   createProduct,
   getBrands,
   getCategories,
+  getProductById,
   getProducts,
 } from '../../../controllers/v1/Product/productController';
 import { createStock } from '../../../controllers/v1/Product/stockController';
@@ -14,6 +15,7 @@ const router = express.Router();
 // Product Routes
 router.post('/products', requireAuth, createProduct);
 router.get('/products', requireAuth, getProducts);
+router.get('/products/:id', requireAuth, getProductById);
 
 //Stock Routes
 router.post('/stocks', requireAuth, createStock);
