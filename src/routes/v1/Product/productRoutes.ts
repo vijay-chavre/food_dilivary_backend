@@ -8,12 +8,14 @@ import {
   getCategories,
   getProductById,
   getProducts,
+  updateProduct,
 } from '../../../controllers/v1/Product/productController';
 import { createStock } from '../../../controllers/v1/Product/stockController';
 const router = express.Router();
 
 // Product Routes
 router.post('/products', requireAuth, createProduct);
+router.put('/products/:id', requireAuth, updateProduct);
 router.get('/products', requireAuth, getProducts);
 router.get('/products/:id', requireAuth, getProductById);
 

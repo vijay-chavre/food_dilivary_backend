@@ -38,6 +38,31 @@ export const createProduct = asyncHandler(async (req, res, next) => {
   sendSuccess(res, newProduct, 200);
 });
 
+export const updateProduct = asyncHandler(async (req, res, next) => {
+  const { name, description, price, image, category, brand, unit } = req.body;
+  // add validations
+  if (
+    [name, price, category, brand, unit].some((field) => !field || field === '')
+  ) {
+    throw new CustomError('Please fill all the fields', 400);
+  }
+  // check if product exists
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    throw new CustomError('Product not found', 404);
+  }
+  // update product
+  product.name = name;
+  product.description = description;
+  product.price = price;
+  product.image = image;
+  product.category = category;
+  product.brand = brand;
+  product.unit = unit;
+  await product.save();
+  sendSuccess(res, product, 200);
+});
+
 export const getProducts = asyncHandler(async (req, res, next) => {
   const page = parseInt(req.query.page as unknown as string) || 1;
   const limit = parseInt(req.query.limit as unknown as string) || 10;
