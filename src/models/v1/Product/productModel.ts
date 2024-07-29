@@ -43,7 +43,7 @@ const productSchema = new Schema<ProductDocument>(
     },
     description: {
       type: String,
-      required: true,
+      required: false,
     },
     price: {
       type: Number,
