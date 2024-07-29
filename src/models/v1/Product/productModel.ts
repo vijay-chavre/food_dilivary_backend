@@ -12,6 +12,8 @@ interface ProductDocument extends Document {
   description: string;
   price: number;
   image: string;
+  hsn: number;
+  gst: number;
   unit: {
     type: string;
     enum: ['kg', 'gm', 'litre', 'ml', 'piece'];
@@ -50,6 +52,14 @@ const productSchema = new Schema<ProductDocument>(
     unit: {
       type: String,
       enum: ['kg', 'gm', 'litre', 'ml', 'piece'],
+      required: true,
+    },
+    hsn: {
+      type: Number,
+      required: true,
+    },
+    gst: {
+      type: Number,
       required: true,
     },
     image: {

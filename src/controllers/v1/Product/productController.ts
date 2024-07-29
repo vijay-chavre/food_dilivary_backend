@@ -11,10 +11,13 @@ import { attachPagination } from '../../../utils/paginatedResponse';
 
 // Product Routes
 export const createProduct = asyncHandler(async (req, res, next) => {
-  const { name, description, price, image, category, brand, unit } = req.body;
+  const { name, description, price, image, category, brand, unit, hsn, gst } =
+    req.body;
   // add validations
   if (
-    [name, price, category, brand, unit].some((field) => !field || field === '')
+    [name, price, category, brand, unit, hsn, gst].some(
+      (field) => !field || field === ''
+    )
   ) {
     throw new CustomError('Please fill all the fields', 400);
   }
@@ -32,6 +35,8 @@ export const createProduct = asyncHandler(async (req, res, next) => {
     category,
     brand,
     unit,
+    hsn,
+    gst,
   });
 
   await newProduct.save();
