@@ -9,6 +9,8 @@ import {
   getProductById,
   getProducts,
   updateProduct,
+  createSupplier,
+  getSuppliers,
 } from '../../../controllers/v1/Product/productController';
 import { createStock } from '../../../controllers/v1/Product/stockController';
 const router = express.Router();
@@ -29,5 +31,10 @@ router.get('/categories', requireAuth, getCategories);
 // Brand Routes
 router.post('/brands', requireAuth, createBrand);
 router.get('/brands', requireAuth, getBrands);
+
+// Supplier Routes
+
+router.post('/suppliers', requireAuth, createSupplier);
+router.get('/suppliers', requireAuth, getSuppliers);
 
 export default router;

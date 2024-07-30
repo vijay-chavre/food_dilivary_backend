@@ -3,8 +3,8 @@ import mongoose, { Schema, Document } from 'mongoose';
 interface SupplierDocument extends Document {
   name: string;
   mobile: string;
-  village: string;
   address: {
+    village: string;
     state: string;
     city: string;
     pincode: number;
@@ -32,13 +32,12 @@ const SupplierSchema = new Schema(
       type: String,
       required: true,
     },
-    village: {
-      type: String,
-      required: true,
-    },
     address: {
-      type: String,
-      required: true,
+      village: String,
+      state: String,
+      city: String,
+      pincode: String,
+      addressLine1: String,
     },
     bankDetails: {
       bankName: {
@@ -53,15 +52,10 @@ const SupplierSchema = new Schema(
         type: String,
         required: true,
       },
-      bankDetails: {
-        bankName: String,
-        accountNo: String,
-        ifscCode: String,
-        accountType: {
-          type: String,
-          enum: ['current', 'saving'],
-          required: true,
-        },
+      accountType: {
+        type: String,
+        enum: ['current', 'saving'],
+        required: true,
       },
     },
     gst: {

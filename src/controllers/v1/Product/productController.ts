@@ -4,8 +4,37 @@ import sendSuccess from '../../../utils/sucessHandler';
 import Product from '../../../models/v1/Product/productModel';
 import Category from '../../../models/v1/Product/categoryModel';
 import Brand from '../../../models/v1/Product/brandModel';
-import { get } from 'http';
+import Supplier from '../../../models/v1/Product/supplier';
 import { attachPagination } from '../../../utils/paginatedResponse';
+
+interface QueryOptions {
+  page?: number;
+  limit?: number;
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+function buildQuery(options: QueryOptions) {
+  const { page = 1, limit = 10, search = '', startDate, endDate } = options;
+
+  const startIndex = (page - 1) * limit;
+  const searchFilters = [];
+
+  if (search) {
+    searchFilters.push({ name: { $regex: search, $options: 'i' } });
+  }
+
+  if (startDate && endDate) {
+    const parsedStartDate = new Date(startDate);
+    const parsedEndDate = new Date(endDate);
+    searchFilters.push({
+      createdAt: { $gte: parsedStartDate, $lte: parsedEndDate },
+    });
+  }
+
+  return { filters: searchFilters, startIndex, limit, page };
+}
 
 // write utl that checks json fields validation and empty or undefined
 
@@ -69,35 +98,11 @@ export const updateProduct = asyncHandler(async (req, res, next) => {
 });
 
 export const getProducts = asyncHandler(async (req, res, next) => {
-  const page = parseInt(req.query.page as unknown as string) || 1;
-  const limit = parseInt(req.query.limit as unknown as string) || 10;
-  const search = (req.query.search as unknown as string) || '';
-
-  const startIndex = (page - 1) * limit;
-  let startDate;
-  let endDate;
-  if (req.query.startDate && req.query.endDate) {
-    try {
-      startDate = new Date(req.query.startDate as unknown as string);
-      endDate = new Date(req.query.endDate as unknown as string);
-    } catch (error) {
-      // Handle invalid date format errors (e.g., return bad request)
-      return next(new Error('Invalid date format in query'));
-    }
-  }
+  const { filters, startIndex, limit, page } = buildQuery(req.query);
   // Build query object with optional search and date range filters
   let query = {};
-  const searchFilters = []; // Array to hold search and date range filters
+  const searchFilters = [];
 
-  // Search filter (if provided)
-  if (search) {
-    searchFilters.push({ name: { $regex: search, $options: 'i' } });
-  }
-
-  // Date range filter (if both dates are provided)
-  if (startDate && endDate) {
-    searchFilters.push({ createdAt: { $gte: startDate, $lte: endDate } });
-  }
   // Category filter
   if (req.query.category) {
     searchFilters.push({ category: req.query.category });
@@ -108,8 +113,8 @@ export const getProducts = asyncHandler(async (req, res, next) => {
   }
 
   // Combine search filters using $or operator (if any filters exist)
-  if (searchFilters.length > 0) {
-    query = { $or: searchFilters };
+  if ([...filters, ...searchFilters].length > 0) {
+    query = { $or: [...filters, ...searchFilters] };
   }
   const products = await Product.find(query)
     .populate('category', 'name')
@@ -187,4 +192,72 @@ export const createBrand = asyncHandler(async (req, res, next) => {
 export const getBrands = asyncHandler(async (req, res, next) => {
   const brands = await Brand.find();
   sendSuccess(res, brands, 200);
+});
+
+// Supplier Controller
+
+export const createSupplier = asyncHandler(async (req, res, next) => {
+  const { name, mobile, address, bankDetails, gst } = req.body;
+
+  // add validations
+  if (
+    [name, mobile, address.village, gst?.gstNo].some(
+      (field) => !field || field === ''
+    )
+  ) {
+    throw new CustomError('Please fill all the fields', 400);
+  }
+  // check if supplier alrddy exist
+  const existingSupplier = await Supplier.findOne({
+    $or: [{ name }, { 'gst.gstNo': gst.gstNo }],
+  });
+
+  if (existingSupplier) {
+    throw new CustomError('Supplier already exists', 400);
+  }
+
+  const newSupplier = new Supplier({
+    name,
+    mobile,
+    address: {
+      village: address.village,
+      state: address.state,
+      city: address.city,
+      pincode: address.pincode,
+      addressLine1: address.addressLine1,
+    },
+    bankDetails: {
+      bankName: bankDetails.bankName,
+      accountNo: bankDetails.accountNo,
+      ifscCode: bankDetails.ifscCode,
+      accountType: bankDetails.accountType,
+    },
+    gst: {
+      gstNo: gst.gstNo,
+      gstType: gst.gstType,
+    },
+  });
+
+  const savedSupplier = await newSupplier.save();
+
+  sendSuccess(res, savedSupplier, 201);
+});
+
+export const getSuppliers = asyncHandler(async (req, res, next) => {
+  const { filters, startIndex, limit, page } = buildQuery(req.query);
+  let query = {};
+
+  if ([...filters].length > 0) {
+    query = { $or: [...filters] };
+  }
+  const supplier = await Supplier.find(query)
+    .sort({
+      updatedAt: -1,
+    })
+    .skip(startIndex)
+    .limit(limit);
+  const total = await Supplier.countDocuments(query);
+  const paginatedResponse = attachPagination(supplier, page, limit, total);
+  sendSuccess(res, paginatedResponse, 200);
+  sendSuccess(res, supplier, 200);
 });
