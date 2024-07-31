@@ -10,8 +10,9 @@ import swaggerUi from 'swagger-ui-express';
 import path from 'path';
 import YAML from 'yaml';
 import fs from 'fs';
-const file = fs.readFileSync(path.resolve(__dirname, './swagger.yaml'), 'utf8');
+const file = fs.readFileSync(path.resolve(__dirname, './swagger.json'), 'utf8');
 const swaggerDocument = YAML.parse(file);
+
 const port = 4000;
 app.use(
   '/',
