@@ -6,9 +6,23 @@ import handleErrors from './src/utils/errorhandler';
 
 import { connectToMongoDB } from './src/config/db';
 import { CustomErrorType } from './src/utils/errorhandler';
-
+import swaggerUi from 'swagger-ui-express';
+import path from 'path';
+import YAML from 'yaml';
+import fs from 'fs';
+const file = fs.readFileSync(path.resolve(__dirname, './swagger.yaml'), 'utf8');
+const swaggerDocument = YAML.parse(file);
 const port = 4000;
-
+app.use(
+  '/',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerDocument, {
+    swaggerOptions: {
+      docExpansion: 'none', // keep all the sections collapsed by default
+    },
+    customSiteTitle: 'FreeAPI docs',
+  })
+);
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: NextFunction) => {
   next(createError(404));

@@ -259,5 +259,4 @@ export const getSuppliers = asyncHandler(async (req, res, next) => {
   const total = await Supplier.countDocuments(query);
   const paginatedResponse = attachPagination(supplier, page, limit, total);
   sendSuccess(res, paginatedResponse, 200);
-  sendSuccess(res, supplier, 200);
 });

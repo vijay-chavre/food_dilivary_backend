@@ -1,0 +1,51 @@
+openapi: 3.0.3
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+
+security:
+  - bearerAuth: []
+
+info:
+  title: API
+  description: >-
+    #  APIS
+  version: 1.0.0
+  contact: {}
+
+servers:
+  - url: "http://localhost:4000/api/v1"
+
+paths:
+  /suppliers:
+    get:
+      tags:
+        - Product APIs
+      summary: Get Suppliers
+      description: Get All the Suppliers
+      operationId: getSuppliers
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            example: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            example: 10
+      responses:
+        "200":
+          description: Get Suppliers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+
+tags:
+  - name: Product APIs
