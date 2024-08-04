@@ -2,7 +2,7 @@ import { CustomError } from '../../../utils/errorhandler';
 import { asyncHandler } from '../../../utils/asyncHandler';
 import sendSuccess from '../../../utils/sucessHandler';
 import Product from '../../../models/v1/Product/productModel';
-import Stock from '../../../models/v1/Product/stockModel';
+import Stock from '../../../models/v1/Product/stockItemModel';
 
 // write utl that checks json fields validation and empty or undefined
 

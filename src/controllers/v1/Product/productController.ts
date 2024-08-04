@@ -4,7 +4,7 @@ import sendSuccess from '../../../utils/sucessHandler';
 import Product from '../../../models/v1/Product/productModel';
 import Category from '../../../models/v1/Product/categoryModel';
 import Brand from '../../../models/v1/Product/brandModel';
-import Supplier from '../../../models/v1/Product/supplier';
+import Supplier from '../../../models/v1/Product/supplierModel';
 import { attachPagination } from '../../../utils/paginatedResponse';
 
 interface QueryOptions {
