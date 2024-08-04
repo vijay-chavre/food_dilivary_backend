@@ -13,9 +13,7 @@ interface StockItemDocument extends Document {
     type: Schema.Types.ObjectId;
     ref: 'Supplier';
   };
-  gst: number;
-  cgst: number;
-  sgst: number;
+
   quantity: number;
   lotNumber: string;
   expiryDate: Date;
@@ -23,6 +21,16 @@ interface StockItemDocument extends Document {
   rate: number;
   minRate: number;
   maxRate: number;
+  gst: {
+    gstRate: number;
+    cgstRate: number;
+    sgstRate: number;
+    gstAmount: number;
+    cgstAmount: number;
+    sgstAmount: number;
+    preGstAmount: number;
+    postGstAmount: number;
+  };
 }
 
 const stockItemSchema = new Schema<StockItemDocument>(
@@ -40,18 +48,6 @@ const stockItemSchema = new Schema<StockItemDocument>(
     supplier: {
       type: Schema.Types.ObjectId,
       ref: 'Supplier',
-      required: true,
-    },
-    gst: {
-      type: Number,
-      required: true,
-    },
-    cgst: {
-      type: Number,
-      required: true,
-    },
-    sgst: {
-      type: Number,
       required: true,
     },
     quantity: {
@@ -81,6 +77,22 @@ const stockItemSchema = new Schema<StockItemDocument>(
     maxRate: {
       type: Number,
       required: true,
+    },
+    gst: {
+      gstRate: Number,
+      cgstRate: Number,
+      sgstRate: Number,
+      gstAmount: Number,
+      cgstAmount: Number,
+      sgstAmount: Number,
+      preGstAmount: {
+        type: Number,
+        default: 0,
+      },
+      postGstAmount: {
+        type: Number,
+        default: 0,
+      },
     },
   },
   {

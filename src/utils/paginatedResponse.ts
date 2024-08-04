@@ -24,3 +24,32 @@ export function attachPagination<T>(
     data,
   };
 }
+
+interface QueryOptions {
+  page?: number;
+  limit?: number;
+  search?: string;
+  startDate?: string;
+  endDate?: string;
+}
+
+export function buildQuery(options: QueryOptions) {
+  const { page = 1, limit = 10, search = '', startDate, endDate } = options;
+
+  const startIndex = (page - 1) * limit;
+  const searchFilters = [];
+
+  if (search) {
+    searchFilters.push({ name: { $regex: search, $options: 'i' } });
+  }
+
+  if (startDate && endDate) {
+    const parsedStartDate = new Date(startDate);
+    const parsedEndDate = new Date(endDate);
+    searchFilters.push({
+      createdAt: { $gte: parsedStartDate, $lte: parsedEndDate },
+    });
+  }
+
+  return { filters: searchFilters, startIndex, limit, page };
+}
