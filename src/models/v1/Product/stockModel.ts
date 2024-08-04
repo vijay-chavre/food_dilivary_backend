@@ -1,23 +1,57 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-interface StockDocument extends Document {
+interface StockItemDocument extends Document {
+  voucher: {
+    type: Schema.Types.ObjectId;
+    ref: 'Voucher';
+  };
   product: {
     type: Schema.Types.ObjectId;
     ref: 'Product';
   };
+  supplier: {
+    type: Schema.Types.ObjectId;
+    ref: 'Supplier';
+  };
+  gst: number;
+  cgst: number;
+  sgst: number;
   quantity: number;
   lotNumber: string;
   expiryDate: Date;
   manufacturingDate: Date;
-  price: number;
-  gstRate: number;
+  rate: number;
+  minRate: number;
+  maxRate: number;
 }
 
-const stockSchema = new Schema<StockDocument>(
+const stockItemSchema = new Schema<StockItemDocument>(
   {
+    voucher: {
+      type: Schema.Types.ObjectId,
+      ref: 'Voucher',
+      required: true,
+    },
     product: {
       type: Schema.Types.ObjectId,
       ref: 'Product',
+      required: true,
+    },
+    supplier: {
+      type: Schema.Types.ObjectId,
+      ref: 'Supplier',
+      required: true,
+    },
+    gst: {
+      type: Number,
+      required: true,
+    },
+    cgst: {
+      type: Number,
+      required: true,
+    },
+    sgst: {
+      type: Number,
       required: true,
     },
     quantity: {
@@ -28,16 +62,25 @@ const stockSchema = new Schema<StockDocument>(
       type: String,
       required: true,
     },
-    price: {
-      type: Number,
-      required: true,
-    },
     expiryDate: {
       type: Date,
       required: true,
     },
     manufacturingDate: {
       type: Date,
+      required: true,
+    },
+    rate: {
+      type: Number,
+      required: true,
+    },
+    minRate: {
+      type: Number,
+      required: true,
+    },
+    maxRate: {
+      type: Number,
+      required: true,
     },
   },
   {
@@ -46,6 +89,9 @@ const stockSchema = new Schema<StockDocument>(
   }
 );
 
-const Stock: Model<StockDocument> = mongoose.model('Stock', stockSchema);
+const StockItem: Model<StockItemDocument> = mongoose.model(
+  'StockItem',
+  stockItemSchema
+);
 
-export default Stock;
+export default StockItem;
