@@ -13,7 +13,6 @@ interface StockItemDocument extends Document {
     type: Schema.Types.ObjectId;
     ref: 'Supplier';
   };
-
   quantity: number;
   lotNumber: string;
   expiryDate: Date;
@@ -52,10 +51,6 @@ const stockItemSchema = new Schema<StockItemDocument>(
     },
     quantity: {
       type: Number,
-      required: true,
-    },
-    lotNumber: {
-      type: String,
       required: true,
     },
     expiryDate: {

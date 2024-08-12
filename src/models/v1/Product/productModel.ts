@@ -1,35 +1,43 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
-interface ProductDocument extends Document {
-  name: {
-    type: string;
-    required: boolean;
-    validate: {
-      validator: (name: string) => boolean;
-      message: string;
-    };
-  };
+interface IBatch {
+  batchNo: string;
+  quantity: number;
+  expiryDate: Date;
+}
+
+const batchSchema = new mongoose.Schema<IBatch>({
+  batchNo: {
+    type: String,
+    required: true,
+  },
+  quantity: {
+    type: Number,
+    required: true,
+  },
+  expiryDate: {
+    type: Date,
+    required: true,
+  },
+});
+interface IProduct {
+  name: string;
   description: string;
   price: number;
   image: string;
   hsn: number;
   gst: number;
-  unit: {
-    type: string;
-    enum: ['kg', 'gm', 'litre', 'ml', 'piece'];
-    required: boolean;
-  };
-  category: {
-    type: Schema.Types.ObjectId;
-    ref: 'Category';
-  };
-  brand: {
-    type: Schema.Types.ObjectId;
-    ref: 'Brand';
-  };
-}
+  unit: 'kg' | 'gm' | 'litre' | 'ml' | 'piece';
+  category: Schema.Types.ObjectId;
+  brand: Schema.Types.ObjectId;
+  quantity: number;
 
-const productSchema = new Schema<ProductDocument>(
+  batches: IBatch[];
+}
+interface ProductDocument extends IProduct, Document {}
+
+interface IProductModel extends Model<ProductDocument> {}
+const productSchema: Schema<ProductDocument> = new Schema(
   {
     name: {
       type: String,
@@ -76,6 +84,11 @@ const productSchema = new Schema<ProductDocument>(
       ref: 'Brand',
       required: true,
     },
+    quantity: {
+      type: Number,
+      default: 0,
+    },
+    batches: [batchSchema],
   },
   {
     timestamps: true,
@@ -83,6 +96,9 @@ const productSchema = new Schema<ProductDocument>(
   }
 );
 
-const Product = mongoose.model<ProductDocument>('Product', productSchema);
+const Product = mongoose.model<ProductDocument, IProductModel>(
+  'Product',
+  productSchema
+);
 
 export default Product;
