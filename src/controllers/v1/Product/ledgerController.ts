@@ -1,12 +1,14 @@
 import { CustomError } from '../../../utils/errorhandler';
 import { asyncHandler } from '../../../utils/asyncHandler';
 import sendSuccess from '../../../utils/sucessHandler';
-import Ledger from '../../../models/v1/Product/ledgerModel';
+import Ledger, { ledgerSchema } from '../../../models/v1/Product/ledgerModel';
 import Group from '../../../models/v1/Product/groupsModel';
 
 import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
 
 export const createLedger = asyncHandler(async (req, res, next) => {
+  const validatedData = ledgerSchema.parse(req.body);
+
   const {
     ledgerName,
     groupID,
@@ -15,28 +17,67 @@ export const createLedger = asyncHandler(async (req, res, next) => {
     billByBill,
     taxDetails,
     narration,
-  } = req.body;
-
-  // Check if the ledger name already exists
+    contactPerson,
+    phone,
+    email,
+    website,
+    openingBalance,
+    maintainBalances,
+    creditPeriod,
+    checkForCreditDays,
+    inventoryValuesAffected,
+    address,
+    country,
+    state,
+    pinCode,
+    panItNo,
+    gstNo,
+    bankName,
+    bankAccountNo,
+    ifscCode,
+    exciseDetails,
+    vatDetails,
+  } = validatedData;
+  // Validated data from the request body
   const existingLedger = await Ledger.findOne({ ledgerName });
   if (existingLedger) {
-    return new CustomError('Ledger Already exist', 200);
+    throw new CustomError('Ledger Already exist', 400);
   }
 
   // Check if the group exists
   const group = await Group.findById(groupID);
   if (!group) {
-    return new CustomError('Group Not exists', 400);
+    throw new CustomError('Group Not exists', 400);
   }
   // Create the ledger
   const newLedger = new Ledger({
     ledgerName,
     groupID,
-    alias: alias || '',
-    inventoryAffected: inventoryAffected || false,
-    billByBill: billByBill || false,
-    taxDetails: taxDetails || '',
-    narration: narration || '',
+    alias,
+    inventoryAffected,
+    billByBill,
+    taxDetails,
+    narration,
+    contactPerson,
+    phone,
+    email,
+    website,
+    openingBalance,
+    maintainBalances,
+    creditPeriod,
+    checkForCreditDays,
+    inventoryValuesAffected,
+    address,
+    country,
+    state,
+    pinCode,
+    panItNo,
+    gstNo,
+    bankName,
+    bankAccountNo,
+    ifscCode,
+    exciseDetails,
+    vatDetails,
   });
 
   await newLedger.save();
