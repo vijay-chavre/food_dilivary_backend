@@ -7,69 +7,6 @@ import Product from '../../../models/v1/Product/productModel';
 import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
 
 // Handler for sales voucher type
-const handleSalesVoucherOld = async (items: IVoucher['items']) => {
-  if (!items || items.length === 0) {
-    throw new CustomError('Sales Order is not valid', 400);
-  }
-
-  // Fetch all products in a single query
-  const itemNames = items.map((item) => item.itemName);
-  const products = await Product.find({ name: { $in: itemNames } });
-
-  // Create a map of product names to product documents for easy lookup
-  const productMap = new Map(
-    products.map((product) => [product.name, product])
-  );
-  const missingItemNames = itemNames.filter(
-    (itemName) => !productMap.has(itemName)
-  );
-
-  if (missingItemNames.length > 0) {
-    throw new CustomError(
-      `Stock Items with Names ${missingItemNames.join(', ')} not found`,
-      400
-    );
-  }
-
-  // Process items and update quantities and batches
-  for (const item of items) {
-    const itemDocument = productMap.get(item.itemName)!;
-
-    // Check if there's enough quantity to fulfill the sales order
-    // if (itemDocument.quantity < item.quantity) {
-    //   throw new CustomError(
-    //     `Insufficient quantity for item ${item.itemName}`,
-    //     400
-    //   );
-    // }
-
-    // Deduct product quantity
-    itemDocument.quantity -= item.quantity;
-
-    // Update or validate batch
-    if (item.batch) {
-      const existingBatch = itemDocument.batches.find(
-        (batch) => batch.batchNo === item.batch
-      );
-      if (existingBatch) {
-        // if (existingBatch.quantity < item.quantity) {
-        //   throw new CustomError(
-        //     `Insufficient batch quantity for item ${item.itemName} in batch ${item.batch}`,
-        //     400
-        //   );
-        // }
-        existingBatch.quantity -= item.quantity;
-      } else {
-        throw new CustomError(
-          `Batch ${item.batch} not found for item ${item.itemName}`,
-          400
-        );
-      }
-    }
-
-    await itemDocument.save();
-  }
-};
 
 const handleSalesVoucher = async (items: IVoucher['items']) => {
   if (!items || items.length === 0) {
@@ -150,57 +87,6 @@ const handleSalesVoucher = async (items: IVoucher['items']) => {
   }
 };
 
-const handlePurchaseVoucherOld = async (items: IVoucher['items']) => {
-  if (!items || items.length === 0) {
-    throw new CustomError('Purchase Order is not valid', 400);
-  }
-
-  // Fetch all products in a single query
-  const itemNames = items.map((item) => item.itemName);
-  const products = await Product.find({ name: { $in: itemNames } });
-
-  // Create a map of product names to product documents for easy lookup
-  const productMap = new Map(
-    products.map((product) => [product.name, product])
-  );
-  const missingItemNames = itemNames.filter(
-    (itemName) => !productMap.has(itemName)
-  );
-
-  if (missingItemNames.length > 0) {
-    throw new Error(
-      `Stock Items with Names ${missingItemNames.join(', ')} not found`
-    );
-  }
-
-  // Process items and update quantities and batches
-  for (const item of items) {
-    const itemDocument = productMap.get(item.itemName)!;
-
-    // Update product quantity
-    itemDocument.quantity += item.quantity;
-
-    // Update or create batch
-    if (item.batch) {
-      const batchIndex = itemDocument.batches.findIndex(
-        (batch) => batch.batchNo === item.batch
-      );
-      if (batchIndex !== -1) {
-        // Update existing batch
-        itemDocument.batches[batchIndex].quantity += item.quantity;
-      } else {
-        // Create new batch
-        itemDocument.batches.push({
-          batchNo: item.batch,
-          expiryDate: item.expiryDate,
-          quantity: item.quantity,
-        });
-      }
-    }
-
-    await itemDocument.save();
-  }
-};
 const handlePurchaseVoucher = async (items: IVoucher['items']) => {
   if (!items || items.length === 0) {
     throw new CustomError('Purchase Order is not valid', 400);
@@ -294,8 +180,6 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
     description,
   } = req.body as IVoucher;
   // check if voucher number is exists
-  const session = await mongoose.startSession();
-  session.startTransaction();
   const voucher = await Voucher.findOne({ voucherNumber: voucherNumber });
 
   if (voucher) {
@@ -315,9 +199,7 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
     checkUniqueItem(items);
     try {
       await handleSalesVoucher(items);
-      await session.commitTransaction();
     } catch (error) {
-      await session.abortTransaction();
       throw error;
     }
   }
@@ -327,7 +209,6 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
   // sendSuccess(res, newVoucher, 200);
 
   sendSuccess(res, 'success response', 200);
-  session.endSession();
 });
 
 export const getVouchers = asyncHandler(async (req, res, next) => {
