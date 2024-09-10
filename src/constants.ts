@@ -25,3 +25,27 @@ export const ChatEventEnum = Object.freeze({
 });
 
 export const AvailableChatEvents = Object.values(ChatEventEnum);
+
+export const AccountNatures = Object.freeze({
+  ASSETS: {
+    CURRENT_ASSETS: 'Current Assets',
+    FIXED_ASSETS: 'Fixed Assets',
+  },
+  LIABILITIES: {
+    CURRENT_LIABILITIES: 'Current Liabilities',
+    CAPITAL_ACCOUNTS: 'Capital Accounts',
+    BRANCH: 'Branch',
+    LOAN: 'Loan',
+    SUSPENSE_ACCOUNTS: 'Suspense Accounts',
+  },
+  INCOMES: {
+    DIRECT_INCOMES: 'Direct Incomes',
+    INDIRECT_INCOMES: 'Indirect Incomes',
+    SALES_ACCOUNTS: 'Sales Accounts',
+  },
+  EXPENSES: {
+    DIRECT_EXPENSES: 'Direct Expenses',
+    INDIRECT_EXPENSES: 'Indirect Expenses',
+    PURCHASE_ACCOUNTS: 'Purchase Accounts',
+  },
+});

@@ -10,9 +10,7 @@ export const ledgerSchema = z.object({
   ledgerName: z.string().min(1, 'Ledger name is required'),
   groupID: objectIdSchema,
   alias: z.string().optional(),
-  inventoryAffected: z.boolean(),
   billByBill: z.boolean(),
-  taxDetails: z.string().optional(),
   narration: z.string().optional(),
   contactPerson: z.string().optional(),
   phone: z.string().optional(),
@@ -55,7 +53,6 @@ export const ledgerSchema = z.object({
 //   ledgerName: string;
 //   groupID: Schema.Types.ObjectId;
 //   alias: string;
-//   inventoryAffected: boolean;
 //   billByBill: boolean;
 //   taxDetails: string;
 //   narration: string;
@@ -107,19 +104,18 @@ const LedgerSchema: Schema<ILedgerDocument> = new Schema(
       maxlength: 100,
       default: '',
     },
-    inventoryAffected: {
-      type: Boolean,
-      default: false,
+    openingBalance: {
+      type: Number,
+      required: true,
+      default: 0,
     },
     billByBill: {
       type: Boolean,
       default: false,
     },
-    taxDetails: {
+    gstNo: {
       type: String,
       trim: true,
-      maxlength: 50,
-      default: '',
     },
     narration: {
       type: String,
@@ -142,9 +138,7 @@ const LedgerSchema: Schema<ILedgerDocument> = new Schema(
       type: String,
       trim: true,
     },
-    openingBalance: {
-      type: Number,
-    },
+
     maintainBalances: {
       type: Boolean,
     },
@@ -174,10 +168,6 @@ const LedgerSchema: Schema<ILedgerDocument> = new Schema(
       trim: true,
     },
     panItNo: {
-      type: String,
-      trim: true,
-    },
-    gstNo: {
       type: String,
       trim: true,
     },
