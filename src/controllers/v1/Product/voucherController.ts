@@ -2,7 +2,10 @@ import mongoose from 'mongoose';
 import { CustomError } from '../../../utils/errorhandler';
 import { asyncHandler } from '../../../utils/asyncHandler';
 import sendSuccess from '../../../utils/sucessHandler';
-import Voucher, { IVoucher } from '../../../models/v1/Product/voucherModel';
+import Voucher, {
+  IVoucher,
+  VoucherSchemaValidation,
+} from '../../../models/v1/Product/voucherModel';
 import Product from '../../../models/v1/Product/productModel';
 import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
 
@@ -179,6 +182,9 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
     ledgerEntries,
     description,
   } = req.body as IVoucher;
+
+  const validatedData = VoucherSchemaValidation.parse(req.body);
+
   // check if voucher number is exists
   const voucher = await Voucher.findOne({ voucherNumber: voucherNumber });
 

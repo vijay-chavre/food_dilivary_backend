@@ -1,4 +1,6 @@
-import mongoose, { Schema, Document, Model } from 'mongoose';
+import mongoose, { Schema, Document, Model, Types } from 'mongoose';
+import { z } from 'zod';
+
 export const voucherTypes = [
   'Contra',
   'Payment',
@@ -23,6 +25,37 @@ export const voucherTypes = [
   'Credit Note',
   'Reversing Journal',
 ];
+const objectIdSchema = z.custom<Types.ObjectId | string>(
+  (val) => Types.ObjectId.isValid(val),
+  { message: 'Invalid ObjectId' }
+);
+const LedgerEntrySchema = z.object({
+  ledger: objectIdSchema,
+  amount: z.number(),
+  drOrCr: z.enum(['D', 'C']),
+});
+
+const ItemSchema = z.object({
+  itemName: z.string(),
+  itemId: objectIdSchema.optional(),
+  quantity: z.number(),
+  rate: z.number(),
+  amount: z.number(),
+  batch: z.string().optional(),
+  expiryDate: z.string().datetime(),
+});
+
+export const VoucherSchemaValidation = z.object({
+  voucherNumber: z.string(),
+  voucherDate: z.string().datetime(),
+  voucherType: z.enum(voucherTypes as [string, ...string[]]),
+  payeeOrPayer: objectIdSchema,
+  amount: z.number().optional(),
+  paymentMethod: z.enum(['Cash', 'Bank Transfer', 'Cheque']).optional(),
+  items: z.array(ItemSchema).optional(),
+  ledgerEntries: z.array(LedgerEntrySchema),
+  description: z.string().optional(),
+});
 
 interface ILedgerEntry {
   ledger: Schema.Types.ObjectId;

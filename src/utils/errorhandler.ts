@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { ZodError } from 'zod';
 export interface CustomErrorType extends Error {
   errors(errors: any): unknown;
   statusCode?: number;
@@ -28,6 +29,13 @@ const handleErrors = (err: CustomErrorType, res: Response) => {
   if (err instanceof CustomError) {
     errorResponse.statusCode = err.statusCode;
   }
+  if (err instanceof ZodError) {
+    errorResponse.errors = err.issues.map((issue) => ({
+      message: issue.message || 'Validation error',
+      errorDetails: issue as unknown as CustomErrorType,
+    }));
+    errorResponse.statusCode = 400;
+  }
 
   if (err.name === 'ValidationError') {
     errorResponse.errors = Object.values(err.errors).map((e) => ({
@@ -48,7 +56,6 @@ const handleErrors = (err: CustomErrorType, res: Response) => {
 
   return res.status(errorResponse.statusCode).json(errorResponse);
 };
-
 class CustomError extends Error {
   statusCode: number;
   constructor(message: string, statusCode: number) {
