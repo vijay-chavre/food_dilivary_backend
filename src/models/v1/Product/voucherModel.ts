@@ -42,12 +42,12 @@ const ItemSchema = z.object({
   rate: z.number(),
   amount: z.number(),
   batch: z.string().optional(),
-  expiryDate: z.string().datetime(),
+  expiryDate: z.string().transform((str) => new Date(str)),
 });
 
 export const VoucherSchemaValidation = z.object({
   voucherNumber: z.string(),
-  voucherDate: z.string().datetime(),
+  voucherDate: z.string().transform((str) => new Date(str)),
   voucherType: z.enum(voucherTypes as [string, ...string[]]),
   payeeOrPayer: objectIdSchema,
   amount: z.number().optional(),
@@ -56,6 +56,8 @@ export const VoucherSchemaValidation = z.object({
   ledgerEntries: z.array(LedgerEntrySchema),
   description: z.string().optional(),
 });
+
+export type IVoucher = z.infer<typeof VoucherSchemaValidation>;
 
 interface ILedgerEntry {
   ledger: Schema.Types.ObjectId;
@@ -72,7 +74,7 @@ interface IItem {
   batch?: string;
   expiryDate: Date;
 }
-export interface IVoucher {
+export interface IVoucherOld {
   voucherNumber: string;
   voucherDate: Date;
   voucherType:

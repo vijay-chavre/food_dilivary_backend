@@ -26,6 +26,8 @@ import {
   createLedger,
   getLedgers,
 } from '../../../controllers/v1/Product/ledgerController';
+
+import { lookups } from '../../../controllers/v1/Product/lookupController';
 const router = express.Router();
 
 // Product Routes
@@ -63,5 +65,8 @@ router.get('/brands', requireAuth, getBrands);
 
 router.post('/suppliers', requireAuth, createSupplier);
 router.get('/suppliers', requireAuth, getSuppliers);
+
+// Lookup Routes
+router.get('/lookups/:modelName', requireAuth, lookups);
 
 export default router;

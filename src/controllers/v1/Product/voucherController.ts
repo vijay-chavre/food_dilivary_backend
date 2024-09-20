@@ -63,7 +63,7 @@ const handleSalesVoucher = async (items: IVoucher['items']) => {
         if (existingBatch) {
           if (existingBatch.quantity < item.quantity) {
             throw new CustomError(
-              `Insufficient batch quantity for item ${item.itemName} in batch ${item.batch}`,
+              `Insufficient batch quantity for item ${item.itemName} in batch ${item.batch} available quantity ${existingBatch.quantity}`,
               400
             );
           }
