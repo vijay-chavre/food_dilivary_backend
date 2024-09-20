@@ -17,6 +17,7 @@ export const lookups = asyncHandler(async (req, res, next) => {
   }
   const Model = await loadModel(modelName);
   const group = await Model.find(query)
+    .select('-__v') // Exclude the __v field
     .sort({
       updatedAt: -1,
     })
