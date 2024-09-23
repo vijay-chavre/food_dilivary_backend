@@ -1,10 +1,8 @@
-import { CustomError } from '../../../utils/errorhandler';
-import { asyncHandler } from '../../../utils/asyncHandler';
-import sendSuccess from '../../../utils/sucessHandler';
 import Group from '../../../models/v1/Product/groupsModel';
-import Ledger from '../../../models/v1/Product/ledgerModel';
-import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
+import { asyncHandler } from '../../../utils/asyncHandler';
 import { loadModel } from '../../../utils/moduleLoader';
+import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
+import sendSuccess from '../../../utils/sucessHandler';
 
 export const lookups = asyncHandler(async (req, res, next) => {
   const { modelName } = req.params;
@@ -17,7 +15,8 @@ export const lookups = asyncHandler(async (req, res, next) => {
   }
   const Model = await loadModel(modelName);
   const group = await Model.find(query)
-    .select('-__v') // Exclude the __v field
+    .select('-__v')
+    .populate('groupID', 'groupName')
     .sort({
       updatedAt: -1,
     })

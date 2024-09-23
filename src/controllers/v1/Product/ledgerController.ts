@@ -51,6 +51,7 @@ export const createLedger = asyncHandler(async (req, res, next) => {
   const newLedger = new Ledger({
     ledgerName,
     groupID,
+    nature: group.nature,
     alias,
     openingBalance,
     gstNo,
@@ -69,7 +70,6 @@ export const createLedger = asyncHandler(async (req, res, next) => {
     state,
     pinCode,
     panItNo,
-
     bankName,
     bankAccountNo,
     ifscCode,

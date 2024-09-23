@@ -1,13 +1,13 @@
-import mongoose from 'mongoose';
-import { CustomError } from '../../../utils/errorhandler';
-import { asyncHandler } from '../../../utils/asyncHandler';
-import sendSuccess from '../../../utils/sucessHandler';
+import Ledger from '../../../models/v1/Product/ledgerModel';
+import Product from '../../../models/v1/Product/productModel';
 import Voucher, {
   IVoucher,
   VoucherSchemaValidation,
 } from '../../../models/v1/Product/voucherModel';
-import Product from '../../../models/v1/Product/productModel';
+import { asyncHandler } from '../../../utils/asyncHandler';
+import { CustomError } from '../../../utils/errorhandler';
 import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
+import sendSuccess from '../../../utils/sucessHandler';
 
 // Handler for sales voucher type
 
@@ -159,6 +159,46 @@ const handlePurchaseVoucher = async (items: IVoucher['items']) => {
   }
 };
 
+const handlePurchaseLedgerEntries = async (
+  ledgerEntries: IVoucher['ledgerEntries']
+) => {
+  if (!ledgerEntries || ledgerEntries.length === 0) {
+    throw new CustomError('Purchase Order is not valid', 400);
+  }
+
+  // Use transactions to ensure atomicity
+  const session = await Ledger.startSession();
+  session.startTransaction();
+
+  try {
+    // Process items and update quantities and batches
+    for (const entry of ledgerEntries) {
+      const ledger = await Ledger.findOne({ _id: entry.ledger });
+      if (!ledger) {
+        throw new CustomError(
+          `Ledger with name ${entry.ledger} not found`,
+          400
+        );
+      }
+
+      if (entry.drOrCr === 'D' || entry.drOrCr === 'C') {
+        ledger.openingBalance += entry.amount;
+      } else {
+        throw new CustomError('Invalid drOrCr value', 400);
+      }
+
+      await ledger.save({ session });
+    }
+    await session.commitTransaction();
+  } catch (error) {
+    // Rollback the transaction if any operation fails
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
+};
+
 const checkUniqueItem = (items: IVoucher['items']) => {
   if (!items || items.length === 0) {
     throw new CustomError('Purchase Order is not valid', 400);
@@ -192,10 +232,15 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
     throw new CustomError('Voucher Already Exists', 400);
   }
 
+  // create transaction for each voucher
+  const session = await Voucher.startSession();
+  session.startTransaction();
+
   if (voucherType === 'Purchase') {
     checkUniqueItem(items);
     try {
       await handlePurchaseVoucher(items);
+      await handlePurchaseLedgerEntries(ledgerEntries);
     } catch (error) {
       throw error;
     }
@@ -211,10 +256,12 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
   }
 
   // Uncomment this if you want to save the voucher to the database
-  // const newVoucher = await Voucher.create(req.body);
-  // sendSuccess(res, newVoucher, 200);
+  const newVoucher = await Voucher.create(req.body);
+  await session.commitTransaction();
+  session.endSession();
+  sendSuccess(res, newVoucher, 200);
 
-  sendSuccess(res, 'success response', 200);
+  // sendSuccess(res, 'success response', 200);
 });
 
 export const getVouchers = asyncHandler(async (req, res, next) => {

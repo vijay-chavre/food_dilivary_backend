@@ -16,7 +16,10 @@ import {
   createStockItem,
   getStockItems,
 } from '../../../controllers/v1/Product/stockController';
-import { createVoucher } from '../../../controllers/v1/Product/voucherController';
+import {
+  createVoucher,
+  getVouchers,
+} from '../../../controllers/v1/Product/voucherController';
 import {
   createDefaultGroups,
   createGroup,
@@ -47,7 +50,7 @@ router.get('/ledgers', requireAuth, getLedgers);
 
 // Voucher Routes
 router.post('/vouchers', requireAuth, createVoucher);
-router.get('/vouchers', requireAuth);
+router.get('/vouchers', requireAuth, getVouchers);
 
 //Stock Routes
 router.post('/stocks', requireAuth, createStockItem);

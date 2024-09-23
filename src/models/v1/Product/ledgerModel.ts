@@ -1,6 +1,6 @@
 import mongoose, { Schema, Document, Model, Types } from 'mongoose';
 import { z } from 'zod';
-
+const NATURES = ['Assets', 'Liabilities', 'Income', 'Expenses'];
 const objectIdSchema = z.custom<Types.ObjectId | string>(
   (val) => Types.ObjectId.isValid(val),
   { message: 'Invalid ObjectId' }
@@ -9,6 +9,7 @@ const objectIdSchema = z.custom<Types.ObjectId | string>(
 export const ledgerSchema = z.object({
   ledgerName: z.string().min(1, 'Ledger name is required'),
   groupID: objectIdSchema,
+  nature: z.enum(NATURES as [string, ...string[]]).optional(),
   alias: z.string().optional(),
   billByBill: z.boolean(),
   narration: z.string().optional(),
@@ -49,35 +50,6 @@ export const ledgerSchema = z.object({
   vatDetails: z.boolean().optional(),
 });
 
-// interface ILedger {
-//   ledgerName: string;
-//   groupID: Schema.Types.ObjectId;
-//   alias: string;
-//   billByBill: boolean;
-//   taxDetails: string;
-//   narration: string;
-//   contactPerson?: string;
-//   phone?: string;
-//   email?: string;
-//   website?: string;
-//   openingBalance?: number;
-//   maintainBalances?: boolean;
-//   creditPeriod?: number;
-//   checkForCreditDays?: boolean;
-//   inventoryValuesAffected?: boolean;
-//   address?: string;
-//   country?: string;
-//   state?: string;
-//   pinCode?: string;
-//   panItNo?: string;
-//   gstNo?: string;
-//   bankName?: string;
-//   bankAccountNo?: string;
-//   ifscCode?: string;
-//   exciseDetails?: boolean;
-//   vatDetails?: boolean;
-// }
-
 type ILedger = z.infer<typeof ledgerSchema>;
 
 interface ILedgerDocument extends ILedger, Document {}
@@ -96,6 +68,11 @@ const LedgerSchema: Schema<ILedgerDocument> = new Schema(
     groupID: {
       type: Schema.Types.ObjectId,
       ref: 'Group',
+      required: true,
+    },
+    nature: {
+      type: String,
+      enum: NATURES,
       required: true,
     },
     alias: {

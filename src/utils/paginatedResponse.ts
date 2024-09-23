@@ -31,6 +31,7 @@ interface QueryOptions {
   search?: string;
   startDate?: string;
   endDate?: string;
+  searchColumns?: string[];
 }
 
 export function buildQuery(options: QueryOptions) {
@@ -38,11 +39,17 @@ export function buildQuery(options: QueryOptions) {
 
   const startIndex = (page - 1) * limit;
   const searchFilters = [];
-
   if (search) {
-    searchFilters.push({ name: { $regex: search, $options: 'i' } });
+    const searchRegex = { $regex: search, $options: 'i' };
+    const searchColumns = options.searchColumns || ['name'];
+    const searchConditions = searchColumns.map((column) => ({
+      [column]: searchRegex,
+    }));
+    if (!searchColumns.includes('name')) {
+      searchConditions.push({ name: searchRegex });
+    }
+    searchFilters.push({ $or: searchConditions });
   }
-
   if (startDate && endDate) {
     const parsedStartDate = new Date(startDate);
     const parsedEndDate = new Date(endDate);
