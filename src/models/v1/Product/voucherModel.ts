@@ -74,39 +74,39 @@ interface IItem {
   batch?: string;
   expiryDate: Date;
 }
-export interface IVoucherOld {
-  voucherNumber: string;
-  voucherDate: Date;
-  voucherType:
-    | 'Contra'
-    | 'Payment'
-    | 'Receipt'
-    | 'Journal'
-    | 'Debit Note'
-    | 'Credit Note'
-    | 'Purchase'
-    | 'Sales'
-    | 'Memo'
-    | 'Order'
-    | 'Delivery Note'
-    | 'Receipt Note'
-    | 'Rejection Note'
-    | 'Payroll'
-    | 'Manufacture'
-    | 'Consumption'
-    | 'Purchase Order'
-    | 'Sales Order'
-    | 'Stock Journal'
-    | 'Debit Note'
-    | 'Credit Note'
-    | 'Reversing Journal';
-  payeeOrPayer: Schema.Types.ObjectId; // Reference to Ledger (Payee/Payer)
-  amount?: number;
-  paymentMethod?: 'Cash' | 'Bank Transfer' | 'Cheque';
-  items?: IItem[]; // You can define the item interface if needed
-  ledgerEntries: ILedgerEntry[];
-  description?: string;
-}
+// export interface IVoucherOld {
+//   voucherNumber: string;
+//   voucherDate: Date;
+//   voucherType:
+//     | 'Contra'
+//     | 'Payment'
+//     | 'Receipt'
+//     | 'Journal'
+//     | 'Debit Note'
+//     | 'Credit Note'
+//     | 'Purchase'
+//     | 'Sales'
+//     | 'Memo'
+//     | 'Order'
+//     | 'Delivery Note'
+//     | 'Receipt Note'
+//     | 'Rejection Note'
+//     | 'Payroll'
+//     | 'Manufacture'
+//     | 'Consumption'
+//     | 'Purchase Order'
+//     | 'Sales Order'
+//     | 'Stock Journal'
+//     | 'Debit Note'
+//     | 'Credit Note'
+//     | 'Reversing Journal';
+//   payeeOrPayer: Schema.Types.ObjectId; // Reference to Ledger (Payee/Payer)
+//   amount?: number;
+//   paymentMethod?: 'Cash' | 'Bank Transfer' | 'Cheque';
+//   items?: IItem[]; // You can define the item interface if needed
+//   ledgerEntries: ILedgerEntry[];
+//   description?: string;
+// }
 
 interface IVoucherDocument extends IVoucher, Document {}
 

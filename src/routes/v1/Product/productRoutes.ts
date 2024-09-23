@@ -31,6 +31,7 @@ import {
 } from '../../../controllers/v1/Product/ledgerController';
 
 import { lookups } from '../../../controllers/v1/Product/lookupController';
+import { getNextVoucherNumber } from '../../../controllers/v1/Product/voucherNumberController';
 const router = express.Router();
 
 // Product Routes
@@ -51,6 +52,7 @@ router.get('/ledgers', requireAuth, getLedgers);
 // Voucher Routes
 router.post('/vouchers', requireAuth, createVoucher);
 router.get('/vouchers', requireAuth, getVouchers);
+router.post('/voucherNumbers', requireAuth, getNextVoucherNumber);
 
 //Stock Routes
 router.post('/stocks', requireAuth, createStockItem);
