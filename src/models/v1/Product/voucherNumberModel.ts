@@ -16,7 +16,8 @@ const VoucherNumberSchema: Schema<IVoucherNumberDocument> = new mongoose.Schema(
   {
     type: { type: String, required: true },
     voucherNumber: { type: Number, unique: true, required: true },
-  }
+  },
+  { timestamps: true }
 );
 
 const Voucher: IVoucherNumberModel = mongoose.model<

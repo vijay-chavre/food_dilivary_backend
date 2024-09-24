@@ -8,10 +8,14 @@ import { asyncHandler } from '../../../utils/asyncHandler';
 import { CustomError } from '../../../utils/errorhandler';
 import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
 import sendSuccess from '../../../utils/sucessHandler';
+import { ClientSession } from 'mongoose';
 
 // Handler for sales voucher type
 
-const handleSalesVoucher = async (items: IVoucher['items']) => {
+const handleSalesVoucher = async (
+  items: IVoucher['items'],
+  session: ClientSession
+) => {
   if (!items || items.length === 0) {
     throw new CustomError('Sales Order is not valid', 400);
   }
@@ -35,9 +39,9 @@ const handleSalesVoucher = async (items: IVoucher['items']) => {
     );
   }
 
-  // Use transactions to ensure atomicity
-  const session = await Product.startSession();
-  session.startTransaction();
+  // // Use transactions to ensure atomicity
+  // const session = await Product.startSession();
+  // session.startTransaction();
 
   try {
     // Process items and update quantities and batches
@@ -85,12 +89,13 @@ const handleSalesVoucher = async (items: IVoucher['items']) => {
     // Rollback the transaction if any operation fails
     await session.abortTransaction();
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 
-const handlePurchaseVoucher = async (items: IVoucher['items']) => {
+const handlePurchaseVoucher = async (
+  items: IVoucher['items'],
+  session: ClientSession
+) => {
   if (!items || items.length === 0) {
     throw new CustomError('Purchase Order is not valid', 400);
   }
@@ -114,9 +119,9 @@ const handlePurchaseVoucher = async (items: IVoucher['items']) => {
     );
   }
 
-  // Use transactions to ensure atomicity
-  const session = await Product.startSession();
-  session.startTransaction();
+  // // Use transactions to ensure atomicity
+  // const session = await Product.startSession();
+  // session.startTransaction();
 
   try {
     // Process items and update quantities and batches
@@ -154,21 +159,20 @@ const handlePurchaseVoucher = async (items: IVoucher['items']) => {
     // Rollback the transaction if any operation fails
     await session.abortTransaction();
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 
 const handlePurchaseLedgerEntries = async (
-  ledgerEntries: IVoucher['ledgerEntries']
+  ledgerEntries: IVoucher['ledgerEntries'],
+  session: ClientSession
 ) => {
   if (!ledgerEntries || ledgerEntries.length === 0) {
     throw new CustomError('Purchase Order is not valid', 400);
   }
 
-  // Use transactions to ensure atomicity
-  const session = await Ledger.startSession();
-  session.startTransaction();
+  // // Use transactions to ensure atomicity
+  // const session = await Ledger.startSession();
+  // session.startTransaction();
 
   try {
     // Process items and update quantities and batches
@@ -194,8 +198,6 @@ const handlePurchaseLedgerEntries = async (
     // Rollback the transaction if any operation fails
     await session.abortTransaction();
     throw error;
-  } finally {
-    session.endSession();
   }
 };
 
@@ -239,8 +241,8 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
   if (voucherType === 'Purchase') {
     checkUniqueItem(items);
     try {
-      await handlePurchaseVoucher(items);
-      await handlePurchaseLedgerEntries(ledgerEntries);
+      await handlePurchaseVoucher(items, session);
+      await handlePurchaseLedgerEntries(ledgerEntries, session);
     } catch (error) {
       throw error;
     }
@@ -249,7 +251,7 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
   if (voucherType === 'Sales') {
     checkUniqueItem(items);
     try {
-      await handleSalesVoucher(items);
+      await handleSalesVoucher(items, session);
     } catch (error) {
       throw error;
     }
@@ -260,8 +262,6 @@ export const createVoucher = asyncHandler(async (req, res, next) => {
   await session.commitTransaction();
   session.endSession();
   sendSuccess(res, newVoucher, 200);
-
-  // sendSuccess(res, 'success response', 200);
 });
 
 export const getVouchers = asyncHandler(async (req, res, next) => {
