@@ -82,9 +82,6 @@ const handleSalesVoucher = async (
 
       await itemDocument.save({ session });
     }
-
-    // Commit the transaction if all operations succeed
-    await session.commitTransaction();
   } catch (error) {
     // Rollback the transaction if any operation fails
     await session.abortTransaction();
@@ -154,7 +151,6 @@ const handlePurchaseVoucher = async (
     }
 
     // Commit the transaction if all operations succeed
-    await session.commitTransaction();
   } catch (error) {
     // Rollback the transaction if any operation fails
     await session.abortTransaction();
@@ -185,15 +181,18 @@ const handlePurchaseLedgerEntries = async (
         );
       }
 
-      if (entry.drOrCr === 'D' || entry.drOrCr === 'C') {
-        ledger.openingBalance += entry.amount;
+      let updateFields = {};
+
+      if (entry.drOrCr === 'D') {
+        updateFields = { $inc: { openingBalance: entry.amount } };
+      } else if (entry.drOrCr === 'C') {
+        updateFields = { $inc: { openingBalance: -entry.amount } };
       } else {
         throw new CustomError('Invalid drOrCr value', 400);
       }
 
-      await ledger.save({ session });
+      await Ledger.updateOne({ _id: entry.ledger }, updateFields, { session });
     }
-    await session.commitTransaction();
   } catch (error) {
     // Rollback the transaction if any operation fails
     await session.abortTransaction();

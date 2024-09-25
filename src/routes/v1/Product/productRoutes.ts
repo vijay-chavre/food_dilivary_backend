@@ -23,6 +23,7 @@ import {
 import {
   createDefaultGroups,
   createGroup,
+  deleteDefaultGroupsAndLedgers,
   getGroups,
 } from '../../../controllers/v1/Product/groupController';
 import {
@@ -43,6 +44,7 @@ router.get('/products/:id', requireAuth, getProductById);
 //Groups Routes
 router.post('/groups', requireAuth, createGroup);
 router.post('/groups/default', requireAuth, createDefaultGroups);
+router.delete('/groups/default', requireAuth, deleteDefaultGroupsAndLedgers);
 router.get('/groups', requireAuth, getGroups);
 
 // Ledger Routes

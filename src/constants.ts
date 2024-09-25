@@ -49,3 +49,59 @@ export const AccountNatures = Object.freeze({
     PURCHASE_ACCOUNTS: 'Purchase Accounts',
   },
 });
+
+export const defaultGroups = [
+  { groupName: 'Sundry Debtors', nature: 'Assets' },
+  { groupName: 'Bank Accounts', nature: 'Assets' },
+  { groupName: 'Cash-in-Hand', nature: 'Assets' },
+  { groupName: 'Stock-in-Hand', nature: 'Assets' },
+  { groupName: 'Deposits', nature: 'Assets' },
+  { groupName: 'Sundry Creditors', nature: 'Liabilities' },
+  { groupName: 'Taxes', nature: 'Liabilities' },
+  { groupName: 'Suspense Accounts', nature: 'Liabilities' },
+  { groupName: 'Sales Accounts', nature: 'Income' },
+  { groupName: 'Purchase Accounts', nature: 'Expenses' },
+];
+
+export const defaultLedgers = [
+  {
+    ledgerName: 'Cash A/c',
+    groupName: 'Cash-in-Hand',
+    alias: 'Cash A/c',
+    narration: 'Total Cash in Hand Account of Company',
+    inventoryValuesAffected: false,
+    openingBalance: 0,
+    maintainBalances: true,
+    billByBill: false,
+  },
+  {
+    ledgerName: 'Bank A/c',
+    groupName: 'Bank Accounts',
+    alias: 'Bank A/c',
+    narration: 'Total Cash In Bank Revenue Account of Company',
+    inventoryValuesAffected: false,
+    openingBalance: 0,
+    maintainBalances: true,
+    billByBill: false,
+  },
+  {
+    ledgerName: 'Sales A/c',
+    groupName: 'Sales Accounts',
+    alias: 'Sales A/c',
+    narration: 'Sales Revenue Account of Company',
+    inventoryValuesAffected: true,
+    openingBalance: 0,
+    maintainBalances: true,
+    billByBill: false,
+  },
+  {
+    ledgerName: 'Purchase A/c',
+    groupName: 'Purchase Accounts',
+    alias: 'Purchase A/c',
+    narration: 'Purchase Revenue Account of Company',
+    inventoryAffected: true,
+    openingBalance: 0,
+    maintainBalances: true,
+    billByBill: false,
+  },
+];
