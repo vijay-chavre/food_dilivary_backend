@@ -50,6 +50,8 @@ export const AccountNatures = Object.freeze({
   },
 });
 
+export const NATURES = ['Assets', 'Liabilities', 'Income', 'Expenses'];
+
 export const defaultGroups = [
   { groupName: 'Sundry Debtors', nature: 'Assets' },
   { groupName: 'Bank Accounts', nature: 'Assets' },
