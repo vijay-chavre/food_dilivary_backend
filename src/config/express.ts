@@ -25,7 +25,11 @@ app.set('io', io);
 
 app.use(
   cors({
-    origin: ['http://localhost:4001', 'http://localhost:6006'],
+    origin: [
+      'http://localhost:4001',
+      'http://localhost:6006',
+      'http://localhost:3000',
+    ],
     credentials: true,
   })
 );

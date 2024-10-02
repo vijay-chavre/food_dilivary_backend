@@ -9,6 +9,7 @@
     // "allowImportingTsExtensions": true,
     // "noEmit": true,
     // "strict": true
+    "skipLibCheck": true,
 
     "target": "es5", // Set the target ECMAScript version (adjust if needed)
     "module": "commonjs", // Use the CommonJS module system
