@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "start": "ts-node app.ts --profile vijay-personal",
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "build": "npx tsc --build tsconfig.json",
+    "deploy": "serverless deploy"
   },
   "dependencies": {
     "@types/socket.io": "^3.0.2",
