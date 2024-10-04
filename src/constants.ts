@@ -51,6 +51,7 @@ export const AccountNatures = Object.freeze({
 });
 
 export const NATURES = ['Assets', 'Liabilities', 'Income', 'Expenses'];
+export const PAYMENT_METHODS = ['Cash', 'Bank Transfer', 'Cheque', 'Credit'];
 
 export const defaultGroups = [
   { groupName: 'Sundry Debtors', nature: 'Assets' },

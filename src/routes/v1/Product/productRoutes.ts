@@ -18,6 +18,7 @@ import {
 } from '../../../controllers/v1/Product/stockController';
 import {
   createVoucher,
+  deleteAllVouchers,
   getVouchers,
 } from '../../../controllers/v1/Product/voucherController';
 import {
@@ -55,6 +56,7 @@ router.get('/ledgers', requireAuth, getLedgers);
 router.post('/vouchers', requireAuth, createVoucher);
 router.get('/vouchers', requireAuth, getVouchers);
 router.post('/voucherNumbers', requireAuth, getNextVoucherNumber);
+router.delete('/vouchers', requireAuth, deleteAllVouchers);
 
 //Stock Routes
 router.post('/stocks', requireAuth, createStockItem);

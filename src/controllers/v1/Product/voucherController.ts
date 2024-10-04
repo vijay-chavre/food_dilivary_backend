@@ -1,3 +1,4 @@
+import { NATURES } from '../../../constants';
 import Ledger from '../../../models/v1/Product/ledgerModel';
 import Product from '../../../models/v1/Product/productModel';
 import Voucher, {
@@ -183,14 +184,35 @@ const handlePurchaseLedgerEntries = async (
 
       let updateFields = {};
 
-      if (entry.drOrCr === 'D') {
-        updateFields = { $inc: { openingBalance: entry.amount } };
-      } else if (entry.drOrCr === 'C') {
-        updateFields = { $inc: { openingBalance: -entry.amount } };
-      } else {
-        throw new CustomError('Invalid drOrCr value', 400);
+      if (!ledger) {
+        throw new CustomError('Ledger not found', 404);
+      }
+      if (!NATURES.includes(ledger.nature as string)) {
+        throw new CustomError('Invalid account nature', 400);
       }
 
+      const isPositiveUpdate =
+        (ledger.nature === 'Assets' && entry.drOrCr === 'D') ||
+        (ledger.nature === 'Expenses' && entry.drOrCr === 'D') ||
+        (ledger.nature === 'Liabilities' && entry.drOrCr === 'C') ||
+        (ledger.nature === 'Income' && entry.drOrCr === 'C');
+
+      const isNegativeUpdate =
+        (ledger.nature === 'Assets' && entry.drOrCr === 'C') ||
+        (ledger.nature === 'Expenses' && entry.drOrCr === 'C') ||
+        (ledger.nature === 'Liabilities' && entry.drOrCr === 'D') ||
+        (ledger.nature === 'Income' && entry.drOrCr === 'D');
+
+      if (isPositiveUpdate) {
+        updateFields = { $inc: { openingBalance: entry.amount } };
+      } else if (isNegativeUpdate) {
+        updateFields = { $inc: { openingBalance: -entry.amount } };
+      } else {
+        throw new CustomError(
+          'Invalid drOrCr value or account nature combination',
+          400
+        );
+      }
       await Ledger.updateOne({ _id: entry.ledger }, updateFields, { session });
     }
   } catch (error) {
@@ -270,13 +292,79 @@ export const getVouchers = asyncHandler(async (req, res, next) => {
   if ([...filters].length > 0) {
     query = { $or: [...filters] };
   }
-  const voucher = await Voucher.find(query)
-    .sort({
-      updatedAt: -1,
-    })
-    .skip(startIndex)
-    .limit(limit);
+  const vouchers = await Voucher.aggregate([
+    { $match: query },
+    {
+      $lookup: {
+        from: 'ledgers',
+        localField: 'ledgerEntries.ledger',
+        foreignField: '_id',
+        as: 'ledgerDetails',
+      },
+    },
+    {
+      $addFields: {
+        ledgerEntries: {
+          $map: {
+            input: '$ledgerEntries',
+            as: 'entry',
+            in: {
+              $mergeObjects: [
+                '$$entry',
+                {
+                  ledgerName: {
+                    $arrayElemAt: [
+                      '$ledgerDetails.ledgerName',
+                      {
+                        $indexOfArray: ['$ledgerDetails._id', '$$entry.ledger'],
+                      },
+                    ],
+                  },
+                  ledgerBalance: {
+                    $arrayElemAt: [
+                      '$ledgerDetails.openingBalance',
+                      {
+                        $indexOfArray: ['$ledgerDetails._id', '$$entry.ledger'],
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+    { $project: { ledgerDetails: 0 } },
+    { $sort: { updatedAt: -1 } },
+    { $skip: startIndex },
+    { $limit: limit },
+  ]);
+
   const total = await Voucher.countDocuments(query);
-  const paginatedResponse = attachPagination(voucher, page, limit, total);
+  const paginatedResponse = attachPagination(vouchers, page, limit, total);
   sendSuccess(res, paginatedResponse, 200);
+});
+
+export const deleteAllVouchers = asyncHandler(async (req, res, next) => {
+  const session = await Voucher.startSession();
+  session.startTransaction();
+
+  try {
+    // Delete all vouchers
+    const deletedVouchers = await Voucher.deleteMany({}).session(session);
+
+    // Update all ledger opening balances to 0
+    await Ledger.updateMany({}, { $set: { openingBalance: 0 } }).session(
+      session
+    );
+
+    await session.commitTransaction();
+    sendSuccess(res, deletedVouchers, 200);
+  } catch (error) {
+    await session.abortTransaction();
+    throw error;
+  } finally {
+    session.endSession();
+  }
 });
