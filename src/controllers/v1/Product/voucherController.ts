@@ -1,3 +1,4 @@
+import { ClientSession } from 'mongoose';
 import { NATURES } from '../../../constants';
 import Ledger from '../../../models/v1/Product/ledgerModel';
 import Product from '../../../models/v1/Product/productModel';
@@ -9,7 +10,6 @@ import { asyncHandler } from '../../../utils/asyncHandler';
 import { CustomError } from '../../../utils/errorhandler';
 import { attachPagination, buildQuery } from '../../../utils/paginatedResponse';
 import sendSuccess from '../../../utils/sucessHandler';
-import { ClientSession } from 'mongoose';
 
 // Handler for sales voucher type
 
@@ -344,6 +344,38 @@ export const getVouchers = asyncHandler(async (req, res, next) => {
   const total = await Voucher.countDocuments(query);
   const paginatedResponse = attachPagination(vouchers, page, limit, total);
   sendSuccess(res, paginatedResponse, 200);
+});
+export const getVoucherById = asyncHandler(async (req, res) => {
+  const voucher = await Voucher.findById(req.params.id).lean();
+  if (!voucher) {
+    throw new CustomError('Voucher not found', 404);
+  }
+
+  const [itemDetails, payeeOrPayerDetails] = await Promise.all([
+    Promise.all(
+      (voucher.items || []).map(async (item) => {
+        const itemDetail = await Product.findOne({
+          name: item.itemName,
+        }).lean();
+        return { ...item, details: itemDetail };
+      })
+    ),
+    voucher.payeeOrPayer
+      ? Ledger.findOne({ _id: voucher.payeeOrPayer })
+          .select({
+            ledgerName: 1,
+          })
+          .lean({ virtuals: true })
+      : null,
+  ]);
+
+  const voucherWithItemDetails = {
+    ...voucher,
+    items: itemDetails,
+    payeeOrPayer: payeeOrPayerDetails || voucher.payeeOrPayer,
+  };
+
+  sendSuccess(res, voucherWithItemDetails, 200);
 });
 
 export const deleteAllVouchers = asyncHandler(async (req, res, next) => {

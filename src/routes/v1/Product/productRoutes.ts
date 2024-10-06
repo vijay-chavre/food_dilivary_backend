@@ -19,6 +19,7 @@ import {
 import {
   createVoucher,
   deleteAllVouchers,
+  getVoucherById,
   getVouchers,
 } from '../../../controllers/v1/Product/voucherController';
 import {
@@ -57,6 +58,7 @@ router.post('/vouchers', requireAuth, createVoucher);
 router.get('/vouchers', requireAuth, getVouchers);
 router.post('/voucherNumbers', requireAuth, getNextVoucherNumber);
 router.delete('/vouchers', requireAuth, deleteAllVouchers);
+router.get('/vouchers/:id', requireAuth, getVoucherById);
 
 //Stock Routes
 router.post('/stocks', requireAuth, createStockItem);

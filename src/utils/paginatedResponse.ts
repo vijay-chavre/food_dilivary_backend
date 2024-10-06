@@ -58,5 +58,10 @@ export function buildQuery(options: QueryOptions) {
     });
   }
 
-  return { filters: searchFilters, startIndex, limit, page };
+  return {
+    filters: searchFilters,
+    startIndex,
+    limit: typeof limit === 'string' ? parseInt(limit, 10) : limit,
+    page,
+  };
 }
