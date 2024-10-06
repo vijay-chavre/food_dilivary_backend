@@ -345,37 +345,83 @@ export const getVouchers = asyncHandler(async (req, res, next) => {
   const paginatedResponse = attachPagination(vouchers, page, limit, total);
   sendSuccess(res, paginatedResponse, 200);
 });
-export const getVoucherById = asyncHandler(async (req, res) => {
+export const getVoucherById = asyncHandler(async (req, res, next) => {
   const voucher = await Voucher.findById(req.params.id).lean();
   if (!voucher) {
     throw new CustomError('Voucher not found', 404);
   }
 
-  const [itemDetails, payeeOrPayerDetails] = await Promise.all([
-    Promise.all(
-      (voucher.items || []).map(async (item) => {
-        const itemDetail = await Product.findOne({
-          name: item.itemName,
-        }).lean();
-        return { ...item, details: itemDetail };
-      })
-    ),
-    voucher.payeeOrPayer
-      ? Ledger.findOne({ _id: voucher.payeeOrPayer })
-          .select({
-            ledgerName: 1,
-          })
-          .lean({ virtuals: true })
-      : null,
+  const vouchers = await Voucher.aggregate([
+    {
+      $match: {
+        _id: voucher._id,
+      },
+    },
+    {
+      $lookup: {
+        from: 'ledgers',
+        localField: 'payeeOrPayer',
+        foreignField: '_id',
+        as: 'payeeOrPayerDetails',
+      },
+    },
+    {
+      $addFields: {
+        payeeOrPayer: {
+          $mergeObjects: [
+            {
+              ledgerName: {
+                $arrayElemAt: ['$payeeOrPayerDetails.ledgerName', 0],
+              },
+              _id: {
+                $arrayElemAt: ['$payeeOrPayerDetails._id', 0],
+              },
+            },
+          ],
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: 'products',
+        localField: 'items.itemName',
+        foreignField: 'name',
+        as: 'itemDetails',
+      },
+    },
+    {
+      $addFields: {
+        items: {
+          $map: {
+            input: '$items',
+            as: 'item',
+            in: {
+              $mergeObjects: [
+                '$$item',
+                {
+                  details: {
+                    $arrayElemAt: [
+                      '$itemDetails',
+                      {
+                        $indexOfArray: ['$itemDetails.name', '$$item.itemName'],
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+    {
+      $project: {
+        itemDetails: 0,
+        payeeOrPayerDetails: 0,
+      },
+    },
   ]);
-
-  const voucherWithItemDetails = {
-    ...voucher,
-    items: itemDetails,
-    payeeOrPayer: payeeOrPayerDetails || voucher.payeeOrPayer,
-  };
-
-  sendSuccess(res, voucherWithItemDetails, 200);
+  sendSuccess(res, vouchers[0], 200);
 });
 
 export const deleteAllVouchers = asyncHandler(async (req, res, next) => {
