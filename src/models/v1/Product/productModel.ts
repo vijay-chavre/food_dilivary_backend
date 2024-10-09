@@ -4,6 +4,7 @@ interface IBatch {
   batchNo: string;
   quantity: number;
   expiryDate: Date;
+  rate: number;
 }
 
 const batchSchema = new mongoose.Schema<IBatch>({
@@ -18,6 +19,11 @@ const batchSchema = new mongoose.Schema<IBatch>({
   expiryDate: {
     type: Date,
     required: true,
+  },
+  rate: {
+    type: Number,
+    required: true,
+    default: 0,
   },
 });
 interface IProduct {

@@ -144,6 +144,7 @@ const handlePurchaseVoucher = async (
             batchNo: item.batch,
             expiryDate: item.expiryDate,
             quantity: item.quantity,
+            rate: item.rate,
           });
         }
       }
